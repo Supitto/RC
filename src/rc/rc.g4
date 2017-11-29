@@ -14,20 +14,20 @@ instrucao : declaracao | composicao;
 
 declaracao : LET ID BE TYPE;
 
-composicao_seta_argumento returns [tipo] locals [tipo_atual] : op_ini {$tipo_atual = $op_ini.tipo;} (OP_SETA op[tipo_atual] {$tipo_atual = $op.tipo;})* {$tipo = $tipo_atual;};
-composicao_seta returns [tipo]:  composicao_seta_argumento {$tipo = $composicao_seta_argumento.tipo;} OP_SETA;
-composicao : composicao_seta? comando[$composicao_seta.tipo];
+composicao_seta_argumento : op_ini (OP_SETA op)*;
+composicao_seta:  composicao_seta_argumento OP_SETA;
+composicao : composicao_seta? comando;
 
-comando [primeiro_argumento] : (ID_COMANDO_RESERVADO | ID_COMANDO) parametro*;
+comando : (ID_COMANDO_RESERVADO | ID_COMANDO) parametro*;
 
-parametro returns [tipo] : ABRE_PARENTESES composicao_seta_argumento {$tipo = $composicao_seta_argumento.tipo;} FECHA_PARENTESES | valor {%tipo = $valor.tipo;};
+parametro : ABRE_PARENTESES composicao_seta_argumento FECHA_PARENTESES | valor;
 
-op_ini returns [tipo] : valor {$tipo = $valor.tipo;} | op[null] {$tipo = $op.tipo;};
+op_ini : valor | op;
 
-op [tipo_herdado] returns [tipo]: (ID_OP_RESERVADO | ID_OPERADOR) parametro* | if_statement;
-valor returns [tipo] :ID_OP_RESERVADO| numero {$tipo = $numero.tipo;} | LITERAL {$tipo = "literal"}  | logico {$tipo = "logico"} | ID {%tipo = "variavel"};
+op : (ID_OP_RESERVADO | ID_OPERADOR) parametro* | if_statement;
+valor : ID_OP_RESERVADO| numero | LITERAL | logico | ID ;
 
-numero returns [tipo] : NUMBER {$tipo = "inteiro"}  | float_number {$tipo = "flutuante"};
+numero : NUMBER | float_number;
 float_number : NUMBER '.' NUMBER;
 logico : TRUE|FALSE;
 
