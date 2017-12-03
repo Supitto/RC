@@ -1,13 +1,22 @@
 grammar rc;
 
-programa : (NOVO_JOGO | NOVO_ROBO ID) defop* defcom* FIM ;
+@header {
+package rc;
+}
+
+programa : decl_jogo | decl_robo ;
+// programa : (NOVO_JOGO | NOVO_ROBO) ID defop* defcom* FIM;
+
+decl_jogo : NOVO_JOGO ID defop* defcom* FIM ;
+decl_robo : NOVO_ROBO ID defop* defcom* FIM ;
+
 
 defop: DEFOP ID_OPERADOR args? RETURNS TYPE composicao_seta OUT;
 arg: ID AS TYPE;
 
 defcom: DEFCOM ID_COMANDO args? corpo;
 
-args: (arg (',' arg)*);
+args: (arg1=arg (',' arg)*);
 
 corpo : instrucao*;
 instrucao : declaracao | composicao;
@@ -25,11 +34,15 @@ parametro : ABRE_PARENTESES composicao_seta_argumento FECHA_PARENTESES | valor;
 op_ini : valor | op;
 
 op : (ID_OP_RESERVADO | ID_OPERADOR) parametro* | if_statement;
-valor : ID_OP_RESERVADO| numero | LITERAL | logico | ID ;
+valor : NUMERO | LITERAL | LOGICO | ID ;
+// valor : ID_OP_RESERVADO| numero | LITERAL | logico | ID ;
 
-numero : NUMBER | float_number;
-float_number : NUMBER '.' NUMBER;
-logico : TRUE|FALSE;
+NUMERO : NUMBER | FLOAT_NUMBER;
+// numero : NUMBER | FLOAT_NUMBER;
+FLOAT_NUMBER : NUMBER '.' NUMBER;
+// float_number : NUMBER '.' NUMBER;
+LOGICO : TRUE|FALSE;
+// logico : TRUE | FALSE;
 
 if_statement : IF parametro? RETURNS TYPE ('Is' parametro corpo OUT parametro?)+ 'Default' corpo OUT parametro?;
 
