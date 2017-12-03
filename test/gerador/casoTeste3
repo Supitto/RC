@@ -1,0 +1,14 @@
+new robot misterRobot
+	defcom PrintNum num as integer
+		Print num
+
+	defcom Init
+		Print "Hello, World"
+		PrintNum 42
+	
+	defcom Loop
+		Ahead 100
+		TurnGunRight 360
+		Back 100
+		TurnGunRight 360
+end

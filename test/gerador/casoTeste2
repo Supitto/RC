@@ -1,0 +1,10 @@
+new robot misterRobot
+	defcom Init
+		Print "Hello, World"
+	
+	defcom Loop
+		Ahead 100
+		TurnGunRight 360
+		Back 100
+		TurnGunRight 360
+end
