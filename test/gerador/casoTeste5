@@ -1,0 +1,13 @@
+new robot misterRobot
+	defop _soma a as integer, b as integer returns integer
+		a -> + b -> Out
+	
+	defcom PrintSoma a as integer, b as integer
+		_soma a b -> Print
+
+	defcom Init
+		PrintSoma 1 2
+
+	defcom Loop
+
+end

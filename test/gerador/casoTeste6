@@ -1,0 +1,15 @@
+new robot misterRobot
+    defop _soma a as integer, b as integer, c as integer returns integer
+    a -> + (+ b c) -> Out
+    
+    defcom PrintSoma a as integer, b as integer, c as integer
+        _soma a b c -> Print
+    
+    defcom Init
+        Let soma be integer
+        _soma 1 2 3 -> + (+ 5 6) -> Assign a
+        PrintSoma a 6 7
+    
+    defcom Loop
+    
+end

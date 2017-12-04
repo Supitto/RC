@@ -1,6 +1,7 @@
+// Generated from rc.g4 by ANTLR 4.7
+
 package rc;
 
-// Generated from rc.g4 by ANTLR 4.7
 
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.tree.ErrorNode;
@@ -29,6 +30,30 @@ public class rcBaseListener implements rcListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
+	@Override public void enterDecl_jogo(rcParser.Decl_jogoContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitDecl_jogo(rcParser.Decl_jogoContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterDecl_robo(rcParser.Decl_roboContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitDecl_robo(rcParser.Decl_roboContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
 	@Override public void enterDefop(rcParser.DefopContext ctx) { }
 	/**
 	 * {@inheritDoc}
@@ -36,18 +61,6 @@ public class rcBaseListener implements rcListener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitDefop(rcParser.DefopContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void enterArg(rcParser.ArgContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitArg(rcParser.ArgContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
@@ -65,6 +78,18 @@ public class rcBaseListener implements rcListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
+	@Override public void enterArg(rcParser.ArgContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitArg(rcParser.ArgContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
 	@Override public void enterArgs(rcParser.ArgsContext ctx) { }
 	/**
 	 * {@inheritDoc}
@@ -72,6 +97,18 @@ public class rcBaseListener implements rcListener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitArgs(rcParser.ArgsContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterRetorno(rcParser.RetornoContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitRetorno(rcParser.RetornoContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
@@ -204,42 +241,6 @@ public class rcBaseListener implements rcListener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitValor(rcParser.ValorContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void enterNumero(rcParser.NumeroContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitNumero(rcParser.NumeroContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void enterFloat_number(rcParser.Float_numberContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitFloat_number(rcParser.Float_numberContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void enterLogico(rcParser.LogicoContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitLogico(rcParser.LogicoContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *

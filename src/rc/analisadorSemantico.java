@@ -97,12 +97,19 @@ public class analisadorSemantico extends rcBaseVisitor<String>
 
     @Override
     public String visitValor(rcParser.ValorContext ctx) {
-        if(ctx.numero() != null)
-            return "integer";
-        if(ctx.logico() != null)
+        if(ctx.NUMERO() != null) {
+            try {
+                Integer.parseInt(ctx.NUMERO().getText());
+                return "integr";
+            }
+            catch (NumberFormatException e)
+            {
+                return "floating";
+            }
+
+        }
+        if(ctx.LOGICO() != null)
             return "logical";
-        if(ctx.float_number() != null)
-            return "floating";
         if(ctx.ID() != null)
             try {
                 return main.tv.RetornaTipo(ctx.ID().getText());
@@ -132,6 +139,7 @@ public class analisadorSemantico extends rcBaseVisitor<String>
 
     @Override
     public String visitDefop(rcParser.DefopContext ctx) {
+
         String [] args = new String[ctx.args().arg().size()];
         for (int i = 0; i < args.length; i++) {
             args[i] = visitArg(ctx.args().arg(i));

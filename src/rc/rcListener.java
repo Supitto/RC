@@ -1,6 +1,7 @@
+// Generated from rc.g4 by ANTLR 4.7
+
 package rc;
 
-// Generated from rc.g4 by ANTLR 4.7
 import org.antlr.v4.runtime.tree.ParseTreeListener;
 
 /**
@@ -19,6 +20,26 @@ public interface rcListener extends ParseTreeListener {
 	 */
 	void exitPrograma(rcParser.ProgramaContext ctx);
 	/**
+	 * Enter a parse tree produced by {@link rcParser#decl_jogo}.
+	 * @param ctx the parse tree
+	 */
+	void enterDecl_jogo(rcParser.Decl_jogoContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link rcParser#decl_jogo}.
+	 * @param ctx the parse tree
+	 */
+	void exitDecl_jogo(rcParser.Decl_jogoContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link rcParser#decl_robo}.
+	 * @param ctx the parse tree
+	 */
+	void enterDecl_robo(rcParser.Decl_roboContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link rcParser#decl_robo}.
+	 * @param ctx the parse tree
+	 */
+	void exitDecl_robo(rcParser.Decl_roboContext ctx);
+	/**
 	 * Enter a parse tree produced by {@link rcParser#defop}.
 	 * @param ctx the parse tree
 	 */
@@ -28,16 +49,6 @@ public interface rcListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitDefop(rcParser.DefopContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link rcParser#arg}.
-	 * @param ctx the parse tree
-	 */
-	void enterArg(rcParser.ArgContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link rcParser#arg}.
-	 * @param ctx the parse tree
-	 */
-	void exitArg(rcParser.ArgContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link rcParser#defcom}.
 	 * @param ctx the parse tree
@@ -49,6 +60,16 @@ public interface rcListener extends ParseTreeListener {
 	 */
 	void exitDefcom(rcParser.DefcomContext ctx);
 	/**
+	 * Enter a parse tree produced by {@link rcParser#arg}.
+	 * @param ctx the parse tree
+	 */
+	void enterArg(rcParser.ArgContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link rcParser#arg}.
+	 * @param ctx the parse tree
+	 */
+	void exitArg(rcParser.ArgContext ctx);
+	/**
 	 * Enter a parse tree produced by {@link rcParser#args}.
 	 * @param ctx the parse tree
 	 */
@@ -58,6 +79,16 @@ public interface rcListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitArgs(rcParser.ArgsContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link rcParser#retorno}.
+	 * @param ctx the parse tree
+	 */
+	void enterRetorno(rcParser.RetornoContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link rcParser#retorno}.
+	 * @param ctx the parse tree
+	 */
+	void exitRetorno(rcParser.RetornoContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link rcParser#corpo}.
 	 * @param ctx the parse tree
@@ -168,36 +199,6 @@ public interface rcListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitValor(rcParser.ValorContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link rcParser#numero}.
-	 * @param ctx the parse tree
-	 */
-	void enterNumero(rcParser.NumeroContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link rcParser#numero}.
-	 * @param ctx the parse tree
-	 */
-	void exitNumero(rcParser.NumeroContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link rcParser#float_number}.
-	 * @param ctx the parse tree
-	 */
-	void enterFloat_number(rcParser.Float_numberContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link rcParser#float_number}.
-	 * @param ctx the parse tree
-	 */
-	void exitFloat_number(rcParser.Float_numberContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link rcParser#logico}.
-	 * @param ctx the parse tree
-	 */
-	void enterLogico(rcParser.LogicoContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link rcParser#logico}.
-	 * @param ctx the parse tree
-	 */
-	void exitLogico(rcParser.LogicoContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link rcParser#if_statement}.
 	 * @param ctx the parse tree

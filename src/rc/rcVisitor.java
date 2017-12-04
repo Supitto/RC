@@ -1,6 +1,7 @@
+// Generated from rc.g4 by ANTLR 4.7
+
 package rc;
 
-// Generated from rc.g4 by ANTLR 4.7
 import org.antlr.v4.runtime.tree.ParseTreeVisitor;
 
 /**
@@ -18,17 +19,23 @@ public interface rcVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitPrograma(rcParser.ProgramaContext ctx);
 	/**
+	 * Visit a parse tree produced by {@link rcParser#decl_jogo}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitDecl_jogo(rcParser.Decl_jogoContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link rcParser#decl_robo}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitDecl_robo(rcParser.Decl_roboContext ctx);
+	/**
 	 * Visit a parse tree produced by {@link rcParser#defop}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
 	T visitDefop(rcParser.DefopContext ctx);
-	/**
-	 * Visit a parse tree produced by {@link rcParser#arg}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitArg(rcParser.ArgContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link rcParser#defcom}.
 	 * @param ctx the parse tree
@@ -36,11 +43,23 @@ public interface rcVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitDefcom(rcParser.DefcomContext ctx);
 	/**
+	 * Visit a parse tree produced by {@link rcParser#arg}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitArg(rcParser.ArgContext ctx);
+	/**
 	 * Visit a parse tree produced by {@link rcParser#args}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
 	T visitArgs(rcParser.ArgsContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link rcParser#retorno}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitRetorno(rcParser.RetornoContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link rcParser#corpo}.
 	 * @param ctx the parse tree
@@ -107,24 +126,6 @@ public interface rcVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitValor(rcParser.ValorContext ctx);
-	/**
-	 * Visit a parse tree produced by {@link rcParser#numero}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitNumero(rcParser.NumeroContext ctx);
-	/**
-	 * Visit a parse tree produced by {@link rcParser#float_number}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitFloat_number(rcParser.Float_numberContext ctx);
-	/**
-	 * Visit a parse tree produced by {@link rcParser#logico}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitLogico(rcParser.LogicoContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link rcParser#if_statement}.
 	 * @param ctx the parse tree

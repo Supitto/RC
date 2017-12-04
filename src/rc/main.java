@@ -49,6 +49,10 @@ public class main {
 
             try {
                 rcParser.ProgramaContext programa = parser.programa();
+
+                // Geracao de codigo
+                GeradorCodigo geradorCodigo = new GeradorCodigo();
+                code = geradorCodigo.visitPrograma(programa);
             }
             catch (ParseCancellationException pce) {
                 if (pce.getMessage() != null) {
@@ -61,11 +65,13 @@ public class main {
             FileWriter fileWriter = new FileWriter(args[1]);
             PrintWriter printWriter = new PrintWriter(fileWriter);
             if(main.output!="") {
+                // Compilacao com erros - escrita dos erros no arquivo
                 printWriter.print(main.output);
                 printWriter.println("Fim da compilacao");
             }
             else
             {
+                // Compilacao sem erros - escrita do codigo gerado no arquivo
                 printWriter.print(main.code);
             }
             System.out.println(main.code);
