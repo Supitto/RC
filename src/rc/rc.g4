@@ -10,13 +10,14 @@ programa : decl_jogo | decl_robo ;
 decl_jogo : NOVO_JOGO ID defop* defcom* FIM ;
 decl_robo : NOVO_ROBO ID defop* defcom* FIM ;
 
-
-defop: DEFOP ID_OPERADOR args? RETURNS TYPE composicao_seta OUT;
-arg: ID AS TYPE;
+defop: DEFOP ID_OPERADOR args? RETURNS TYPE retorno;
 
 defcom: DEFCOM ID_COMANDO args? corpo;
 
-args: (arg1=arg (',' arg)*);
+arg: ID AS TYPE;
+args: (arg (',' arg)*);
+
+retorno: composicao_seta OUT | OUT parametro;
 
 corpo : instrucao*;
 instrucao : declaracao | composicao;
