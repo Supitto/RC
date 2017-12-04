@@ -125,6 +125,11 @@ public class rcParser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof rcListener ) ((rcListener)listener).exitPrograma(this);
 		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof rcVisitor ) return ((rcVisitor<? extends T>)visitor).visitPrograma(this);
+			else return visitor.visitChildren(this);
+		}
 	}
 
 	public final ProgramaContext programa() throws RecognitionException {
@@ -221,6 +226,11 @@ public class rcParser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof rcListener ) ((rcListener)listener).exitDefop(this);
 		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof rcVisitor ) return ((rcVisitor<? extends T>)visitor).visitDefop(this);
+			else return visitor.visitChildren(this);
+		}
 	}
 
 	public final DefopContext defop() throws RecognitionException {
@@ -281,6 +291,11 @@ public class rcParser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof rcListener ) ((rcListener)listener).exitArg(this);
 		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof rcVisitor ) return ((rcVisitor<? extends T>)visitor).visitArg(this);
+			else return visitor.visitChildren(this);
+		}
 	}
 
 	public final ArgContext arg() throws RecognitionException {
@@ -328,6 +343,11 @@ public class rcParser extends Parser {
 		@Override
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof rcListener ) ((rcListener)listener).exitDefcom(this);
+		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof rcVisitor ) return ((rcVisitor<? extends T>)visitor).visitDefcom(this);
+			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -384,6 +404,11 @@ public class rcParser extends Parser {
 		@Override
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof rcListener ) ((rcListener)listener).exitArgs(this);
+		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof rcVisitor ) return ((rcVisitor<? extends T>)visitor).visitArgs(this);
+			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -446,6 +471,11 @@ public class rcParser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof rcListener ) ((rcListener)listener).exitCorpo(this);
 		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof rcVisitor ) return ((rcVisitor<? extends T>)visitor).visitCorpo(this);
+			else return visitor.visitChildren(this);
+		}
 	}
 
 	public final CorpoContext corpo() throws RecognitionException {
@@ -500,6 +530,11 @@ public class rcParser extends Parser {
 		@Override
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof rcListener ) ((rcListener)listener).exitInstrucao(this);
+		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof rcVisitor ) return ((rcVisitor<? extends T>)visitor).visitInstrucao(this);
+			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -565,6 +600,11 @@ public class rcParser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof rcListener ) ((rcListener)listener).exitDeclaracao(this);
 		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof rcVisitor ) return ((rcVisitor<? extends T>)visitor).visitDeclaracao(this);
+			else return visitor.visitChildren(this);
+		}
 	}
 
 	public final DeclaracaoContext declaracao() throws RecognitionException {
@@ -619,6 +659,11 @@ public class rcParser extends Parser {
 		@Override
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof rcListener ) ((rcListener)listener).exitComposicao_seta_argumento(this);
+		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof rcVisitor ) return ((rcVisitor<? extends T>)visitor).visitComposicao_seta_argumento(this);
+			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -679,6 +724,11 @@ public class rcParser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof rcListener ) ((rcListener)listener).exitComposicao_seta(this);
 		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof rcVisitor ) return ((rcVisitor<? extends T>)visitor).visitComposicao_seta(this);
+			else return visitor.visitChildren(this);
+		}
 	}
 
 	public final Composicao_setaContext composicao_seta() throws RecognitionException {
@@ -722,6 +772,11 @@ public class rcParser extends Parser {
 		@Override
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof rcListener ) ((rcListener)listener).exitComposicao(this);
+		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof rcVisitor ) return ((rcVisitor<? extends T>)visitor).visitComposicao(this);
+			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -777,6 +832,11 @@ public class rcParser extends Parser {
 		@Override
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof rcListener ) ((rcListener)listener).exitComando(this);
+		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof rcVisitor ) return ((rcVisitor<? extends T>)visitor).visitComando(this);
+			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -848,6 +908,11 @@ public class rcParser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof rcListener ) ((rcListener)listener).exitParametro(this);
 		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof rcVisitor ) return ((rcVisitor<? extends T>)visitor).visitParametro(this);
+			else return visitor.visitChildren(this);
+		}
 	}
 
 	public final ParametroContext parametro() throws RecognitionException {
@@ -870,7 +935,6 @@ public class rcParser extends Parser {
 				break;
 			case TRUE:
 			case FALSE:
-			case ID_OP_RESERVADO:
 			case LITERAL:
 			case ID:
 			case NUMBER:
@@ -914,6 +978,11 @@ public class rcParser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof rcListener ) ((rcListener)listener).exitOp_ini(this);
 		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof rcVisitor ) return ((rcVisitor<? extends T>)visitor).visitOp_ini(this);
+			else return visitor.visitChildren(this);
+		}
 	}
 
 	public final Op_iniContext op_ini() throws RecognitionException {
@@ -922,21 +991,29 @@ public class rcParser extends Parser {
 		try {
 			setState(135);
 			_errHandler.sync(this);
-			switch ( getInterpreter().adaptivePredict(_input,12,_ctx) ) {
-			case 1:
+			switch (_input.LA(1)) {
+			case TRUE:
+			case FALSE:
+			case LITERAL:
+			case ID:
+			case NUMBER:
 				enterOuterAlt(_localctx, 1);
 				{
 				setState(133);
 				valor();
 				}
 				break;
-			case 2:
+			case IF:
+			case ID_OP_RESERVADO:
+			case ID_OPERADOR:
 				enterOuterAlt(_localctx, 2);
 				{
 				setState(134);
 				op();
 				}
 				break;
+			default:
+				throw new NoViableAltException(this);
 			}
 		}
 		catch (RecognitionException re) {
@@ -974,6 +1051,11 @@ public class rcParser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof rcListener ) ((rcListener)listener).exitOp(this);
 		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof rcVisitor ) return ((rcVisitor<? extends T>)visitor).visitOp(this);
+			else return visitor.visitChildren(this);
+		}
 	}
 
 	public final OpContext op() throws RecognitionException {
@@ -1001,7 +1083,7 @@ public class rcParser extends Parser {
 				setState(141);
 				_errHandler.sync(this);
 				_la = _input.LA(1);
-				while ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << ABRE_PARENTESES) | (1L << TRUE) | (1L << FALSE) | (1L << ID_OP_RESERVADO) | (1L << LITERAL) | (1L << ID) | (1L << NUMBER))) != 0)) {
+				while ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << ABRE_PARENTESES) | (1L << TRUE) | (1L << FALSE) | (1L << LITERAL) | (1L << ID) | (1L << NUMBER))) != 0)) {
 					{
 					{
 					setState(138);
@@ -1037,9 +1119,11 @@ public class rcParser extends Parser {
 	}
 
 	public static class ValorContext extends ParserRuleContext {
-		public TerminalNode ID_OP_RESERVADO() { return getToken(rcParser.ID_OP_RESERVADO, 0); }
 		public NumeroContext numero() {
 			return getRuleContext(NumeroContext.class,0);
+		}
+		public Float_numberContext float_number() {
+			return getRuleContext(Float_numberContext.class,0);
 		}
 		public TerminalNode LITERAL() { return getToken(rcParser.LITERAL, 0); }
 		public LogicoContext logico() {
@@ -1058,6 +1142,11 @@ public class rcParser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof rcListener ) ((rcListener)listener).exitValor(this);
 		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof rcVisitor ) return ((rcVisitor<? extends T>)visitor).visitValor(this);
+			else return visitor.visitChildren(this);
+		}
 	}
 
 	public final ValorContext valor() throws RecognitionException {
@@ -1066,45 +1155,42 @@ public class rcParser extends Parser {
 		try {
 			setState(152);
 			_errHandler.sync(this);
-			switch (_input.LA(1)) {
-			case ID_OP_RESERVADO:
+			switch ( getInterpreter().adaptivePredict(_input,15,_ctx) ) {
+			case 1:
 				enterOuterAlt(_localctx, 1);
 				{
 				setState(147);
-				match(ID_OP_RESERVADO);
-				}
-				break;
-			case NUMBER:
-				enterOuterAlt(_localctx, 2);
-				{
-				setState(148);
 				numero();
 				}
 				break;
-			case LITERAL:
+			case 2:
+				enterOuterAlt(_localctx, 2);
+				{
+				setState(148);
+				float_number();
+				}
+				break;
+			case 3:
 				enterOuterAlt(_localctx, 3);
 				{
 				setState(149);
 				match(LITERAL);
 				}
 				break;
-			case TRUE:
-			case FALSE:
+			case 4:
 				enterOuterAlt(_localctx, 4);
 				{
 				setState(150);
 				logico();
 				}
 				break;
-			case ID:
+			case 5:
 				enterOuterAlt(_localctx, 5);
 				{
 				setState(151);
 				match(ID);
 				}
 				break;
-			default:
-				throw new NoViableAltException(this);
 			}
 		}
 		catch (RecognitionException re) {
@@ -1134,6 +1220,11 @@ public class rcParser extends Parser {
 		@Override
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof rcListener ) ((rcListener)listener).exitNumero(this);
+		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof rcVisitor ) return ((rcVisitor<? extends T>)visitor).visitNumero(this);
+			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -1188,6 +1279,11 @@ public class rcParser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof rcListener ) ((rcListener)listener).exitFloat_number(this);
 		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof rcVisitor ) return ((rcVisitor<? extends T>)visitor).visitFloat_number(this);
+			else return visitor.visitChildren(this);
+		}
 	}
 
 	public final Float_numberContext float_number() throws RecognitionException {
@@ -1229,6 +1325,11 @@ public class rcParser extends Parser {
 		@Override
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof rcListener ) ((rcListener)listener).exitLogico(this);
+		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof rcVisitor ) return ((rcVisitor<? extends T>)visitor).visitLogico(this);
+			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -1294,6 +1395,11 @@ public class rcParser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof rcListener ) ((rcListener)listener).exitIf_statement(this);
 		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof rcVisitor ) return ((rcVisitor<? extends T>)visitor).visitIf_statement(this);
+			else return visitor.visitChildren(this);
+		}
 	}
 
 	public final If_statementContext if_statement() throws RecognitionException {
@@ -1308,7 +1414,7 @@ public class rcParser extends Parser {
 			setState(166);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
-			if ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << ABRE_PARENTESES) | (1L << TRUE) | (1L << FALSE) | (1L << ID_OP_RESERVADO) | (1L << LITERAL) | (1L << ID) | (1L << NUMBER))) != 0)) {
+			if ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << ABRE_PARENTESES) | (1L << TRUE) | (1L << FALSE) | (1L << LITERAL) | (1L << ID) | (1L << NUMBER))) != 0)) {
 				{
 				setState(165);
 				parametro();
@@ -1336,7 +1442,7 @@ public class rcParser extends Parser {
 				setState(175);
 				_errHandler.sync(this);
 				_la = _input.LA(1);
-				if ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << ABRE_PARENTESES) | (1L << TRUE) | (1L << FALSE) | (1L << ID_OP_RESERVADO) | (1L << LITERAL) | (1L << ID) | (1L << NUMBER))) != 0)) {
+				if ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << ABRE_PARENTESES) | (1L << TRUE) | (1L << FALSE) | (1L << LITERAL) | (1L << ID) | (1L << NUMBER))) != 0)) {
 					{
 					setState(174);
 					parametro();
@@ -1358,7 +1464,7 @@ public class rcParser extends Parser {
 			setState(185);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
-			if ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << ABRE_PARENTESES) | (1L << TRUE) | (1L << FALSE) | (1L << ID_OP_RESERVADO) | (1L << LITERAL) | (1L << ID) | (1L << NUMBER))) != 0)) {
+			if ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << ABRE_PARENTESES) | (1L << TRUE) | (1L << FALSE) | (1L << LITERAL) | (1L << ID) | (1L << NUMBER))) != 0)) {
 				{
 				setState(184);
 				parametro();
@@ -1421,7 +1527,7 @@ public class rcParser extends Parser {
 		"\5\32\16\2\u008d\u008c\3\2\2\2\u008e\u0091\3\2\2\2\u008f\u008d\3\2\2\2"+
 		"\u008f\u0090\3\2\2\2\u0090\u0094\3\2\2\2\u0091\u008f\3\2\2\2\u0092\u0094"+
 		"\5(\25\2\u0093\u008b\3\2\2\2\u0093\u0092\3\2\2\2\u0094\37\3\2\2\2\u0095"+
-		"\u009b\7\r\2\2\u0096\u009b\5\"\22\2\u0097\u009b\7\16\2\2\u0098\u009b\5"+
+		"\u009b\5\"\22\2\u0096\u009b\5$\23\2\u0097\u009b\7\16\2\2\u0098\u009b\5"+
 		"&\24\2\u0099\u009b\7\34\2\2\u009a\u0095\3\2\2\2\u009a\u0096\3\2\2\2\u009a"+
 		"\u0097\3\2\2\2\u009a\u0098\3\2\2\2\u009a\u0099\3\2\2\2\u009b!\3\2\2\2"+
 		"\u009c\u009f\7\36\2\2\u009d\u009f\5$\23\2\u009e\u009c\3\2\2\2\u009e\u009d"+

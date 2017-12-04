@@ -25,7 +25,7 @@ parametro : ABRE_PARENTESES composicao_seta_argumento FECHA_PARENTESES | valor;
 op_ini : valor | op;
 
 op : (ID_OP_RESERVADO | ID_OPERADOR) parametro* | if_statement;
-valor : ID_OP_RESERVADO| numero | LITERAL | logico | ID ;
+valor : numero | float_number | LITERAL | logico | ID ;
 
 numero : NUMBER | float_number;
 float_number : NUMBER '.' NUMBER;
@@ -34,7 +34,7 @@ logico : TRUE|FALSE;
 if_statement : IF parametro? RETURNS TYPE ('Is' parametro corpo OUT parametro?)+ 'Default' corpo OUT parametro?;
 
 IF: 'If';
-TYPE : 'integer'| 'literal'| 'floating'| 'logical'| 'list';
+TYPE : 'integer'| 'literal'| 'floating'| 'logical';
 ABRE_PARENTESES : '(';
 FECHA_PARENTESES : ')';
 TRUE: 'true';

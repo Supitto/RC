@@ -20,6 +20,9 @@ public class main {
 
     static String output = "";
     static String code = "";
+    static tabelaDeVariaveis tv =  new tabelaDeVariaveis();
+    static tabelaDeComandos tc = new tabelaDeComandos();
+    static tabelaDeOperacoes to = new tabelaDeOperacoes();
     public static void main(String[] args)
     {
         try
