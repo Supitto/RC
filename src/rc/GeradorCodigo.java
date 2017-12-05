@@ -40,17 +40,65 @@ public class GeradorCodigo extends rcBaseVisitor<String> {
         return saida;
     }
 
+    // Separacao do operador e dos argumentos de uma instrucao em uma lista
+    // Entrada: chamada da instrucao, com membros (operador e argumentos) separados por espaco
+    private List<String> separarInstrucao(String instrucao) {
+        List<String> saida = new ArrayList<>();
+
+        // Retorna caso a instrucao seja nula
+        if (instrucao == null) { return saida; }
+
+        // Espacos em strings nao devem ser considersgados
+        // Variavel de estado que determina se o leitor esta dentro de uma string
+        boolean dentroString = false;
+        // Variavel de estado que determina o nivel atual de parenteses
+        int nivelParenteses = 0;
+        // Variavel que determina o inicio da string sendo escrita
+        int inicio = 0;
+        // Variavel que indica o fim da string
+        boolean fimString = false;
+
+        for (int i = 0; i < instrucao.length(); i++) {
+            char atual = instrucao.charAt(i);
+
+            // Altera a variavel de estado para cada delimitador de string encontrado
+            if (atual == '\"') { dentroString = !dentroString; }
+            // Incrementa nivel de parenteses para cada abertura e decrementa para cada fechamento
+            else if (atual == '(') { nivelParenteses += 1; }
+            else if (atual == ')') { nivelParenteses -= 1; }
+
+
+            // Verifica se o final da string foi atingido
+            fimString = (i == (instrucao.length() - 1));
+
+            // Escreve a string atual na lista, caso encontre espaco ou o fim da instrucao
+            if (atual == ' ' && !dentroString && nivelParenteses == 0) {
+                saida.add(instrucao.substring(inicio, i));
+                inicio = i + 1;
+            }
+            else if (fimString) { saida.add(instrucao.substring(inicio)); }
+        }
+
+        return saida;
+    }
+
     // Conversao de operacao para chamada de metodo ou operacao basica
     // Operador e argumentos devem estar separados por espaco
-    private String converterOperacao(String operacao) {
+    private String converterOperacao(String operacao, String argumentoAdicional) {
         StringBuilder saida = new StringBuilder();
 
-        // Lista de argumentos da operacao, separados por espaco
-        List<String> args = new ArrayList<>(Arrays.asList(operacao.split(" ")));
+        // Lista contendo operador e argumentos da operacao, separados por espaco
+        List<String> args = new ArrayList<>(separarInstrucao(operacao));
 
         // Extracao do operador a partir da lista
         String operador = args.get(0);
-        args.remove(0);
+
+        // Adicao do argumento adicional ao metodo, caso houver
+        if (!argumentoAdicional.equals("")) {
+            args.set(0, argumentoAdicional);
+        }
+        // Remocao do operador da lista de argumentos
+        else { args.remove(0); }
 
         // Caso seja um operador binario basico, reescrever in-ordem
         if ((operador.equals("+") || operador.equals("-") || operador.equals("*") ||
@@ -59,7 +107,7 @@ public class GeradorCodigo extends rcBaseVisitor<String> {
         }
         // Escrita da operacao como chamada de funcao
         else {
-            saida.append(operacao + "(");
+            saida.append(operador + "(");
             boolean removerVirgula = args.size() != 0;
 
             // Escrita dos argumentos da operacao na chamada
@@ -72,17 +120,48 @@ public class GeradorCodigo extends rcBaseVisitor<String> {
         return saida.toString();
     }
 
-    // Adicao de argumento a uma chamada de metodo na primeira posicao
-    // Utilizado para operadores seta
-    private String adicionarArgumento(String metodo, String argumento) {
-        String saida;
+    // Conversao de comando para chamada de metodo
+    // Nome do comando e argumentos devem estar separados por espaco
+    private String converterComando(String comando, String argumentoAdicional) {
+        StringBuilder saida = new StringBuilder();
 
-        // Nome do metodo antes do parenteses
-        String nome = metodo.split("\\(")[0];
-        String args = metodo.split("\\(")[1];
-        saida = nome + "(" + argumento + args;
+        // Lista contendo nome e argumentos da operacao, separados por espaco
+        List<String> args = new ArrayList<>(separarInstrucao(comando));
 
-        return saida;
+        // Extracao do nome do comando a partir da lista
+        String nomeComando = args.get(0);
+
+        // Adicao do argumento adicional ao metodo, caso houver
+        if (!argumentoAdicional.equals("")) {
+            args.set(0, argumentoAdicional);
+        }
+        // Remocao do nome do comando da lista de argumentos
+        else { args.remove(0); }
+
+        if(nomeComando.equals("assign")) {
+            saida.append(args.get(1) + " = " + args.get(0));
+        }
+        else if (nomeComando.equals("out")) {
+            saida.append("return " + args.get(0));
+        }
+        else {
+            if (nomeComando.equals("print")) { nomeComando = "out.println"; }
+            // Escrita do comando como chamada de funcao
+            saida.append(nomeComando + "(");
+            boolean removerVirgula = args.size() != 0;
+
+            // Escrita dos argumentos do comando na chamada
+            for (String arg : args) {
+                saida.append(arg + ", ");
+            }
+            // Remocao da virgula do ultimo parametro para fechamento dos parenteses
+            if (removerVirgula) {
+                saida.setLength(saida.length() - 2);
+            }
+            saida.append(")");
+        }
+
+        return saida.toString();
     }
 
     // Escrita de uma linha no codigo, dada a ordem de identacao
@@ -281,7 +360,8 @@ public class GeradorCodigo extends rcBaseVisitor<String> {
     public String visitInstrucao(rcParser.InstrucaoContext ctx) {
         String saida = "";
 
-        if (ctx.composicao() != null) { saida = visitComposicao(ctx.composicao()); }
+        if (ctx.declaracao() != null) { saida = visitDeclaracao(ctx.declaracao()); }
+        else if (ctx.composicao() != null) { saida = visitComposicao(ctx.composicao()); }
 
         return saida;
     }
@@ -296,16 +376,26 @@ public class GeradorCodigo extends rcBaseVisitor<String> {
     }
 
     @Override
+    public String visitDeclaracao(rcParser.DeclaracaoContext ctx) {
+        String saida;
+
+        saida = converterTipoPrimitivo(ctx.TYPE().getText());
+        saida += " " + ctx.ID().getText();
+
+        return saida;
+    }
+
+    @Override
     public String visitComposicao(rcParser.ComposicaoContext ctx) {
         // Caso mais basico: chamada direta para um comando com parametros
         // TODO: composicao de seta para o comando
         String saida;
 
-        saida = visitComando(ctx.comando());
+        String argumento = "";
         if (ctx.composicao_seta() != null) {
-            String argumento = visitComposicao_seta(ctx.composicao_seta());
-            saida = adicionarArgumento(saida, argumento);
+            argumento = visitComposicao_seta(ctx.composicao_seta());
         }
+        saida = converterComando(visitComando(ctx.comando()), argumento);
 
         return saida;
     }
@@ -314,37 +404,14 @@ public class GeradorCodigo extends rcBaseVisitor<String> {
     public String visitComando(rcParser.ComandoContext ctx) {
         StringBuilder saida = new StringBuilder();
 
-        // Caso mais basico: Chamada direta para um comando com parametros
-        // TODO: comando contendo composicao_seta_argumento
         String nomeMetodo = (ctx.ID_COMANDO() != null) ? ctx.ID_COMANDO().getText() :
                                                          ctx.ID_COMANDO_RESERVADO().getText();
-        // Escrita do nome do metodo comecando com letra minuscula
+
         nomeMetodo = Character.toLowerCase(nomeMetodo.charAt(0)) + nomeMetodo.substring(1);
 
-        // Comando de atribuicao
-        if (nomeMetodo.equals("assign")) {
-            saida.append(visitParametro(ctx.parametro(1)) + " = " + visitParametro(ctx.parametro(0)));
-        }
-        // Comando de retorno
-        else if (nomeMetodo.equals("out")) {
-            saida.append("return " + visitParametro(ctx.parametro(0)));
-        }
-        // Comandos parametrizados
-        else {
-            // Comando print
-            if (nomeMetodo.equals("print")) { nomeMetodo = "out.println"; }
-
-            saida.append(nomeMetodo);
-
-            saida.append("(");
-            boolean removerVirgula = (ctx.parametro().size() != 0);
-            // Escrita dos parametros separados por virgula
-            for (rcParser.ParametroContext contextoParametro : ctx.parametro()) {
-                saida.append(visitParametro(contextoParametro) + ", ");
-            }
-            // Remocao da virgula do ultimo parametro para fechamento dos parenteses
-            if (removerVirgula) { saida.setLength(saida.length() - 2); }
-            saida.append(")");
+        saida.append(nomeMetodo);
+        for (rcParser.ParametroContext contextoParametro : ctx.parametro()) {
+            saida.append(" " + visitParametro(contextoParametro));
         }
 
         return saida.toString();
@@ -362,7 +429,7 @@ public class GeradorCodigo extends rcBaseVisitor<String> {
 
         // Escrita da operacao inicial
         if (ctx.op_ini().valor() != null) { argumento = visitOp_ini(ctx.op_ini()); }
-        else { argumento = this.converterOperacao(ctx.op_ini().getText()); }
+        else { argumento = this.converterOperacao(visitOp_ini(ctx.op_ini()), ""); }
 
         // Escrita das operacoes restantes
         // Passa-se a operacao do lado esquerdo da seta como argumento para a proxima
@@ -372,7 +439,7 @@ public class GeradorCodigo extends rcBaseVisitor<String> {
             String op = visitOp(contextoOp);
 
             // Conversao da operacao para ser passada como argumento para a proxima
-            argumento = this.adicionarArgumento(converterOperacao(op), argumento);
+            argumento = this.converterOperacao(op, argumento);
         }
 
         saida = argumento;
@@ -384,6 +451,9 @@ public class GeradorCodigo extends rcBaseVisitor<String> {
         // TODO: composicao_seta_argumento
         String saida = "";
 
+        if (ctx.composicao_seta_argumento() != null) {
+            saida = visitComposicao_seta_argumento(ctx.composicao_seta_argumento());
+        }
         if (ctx.valor() != null) { saida = visitValor(ctx.valor()); }
 
         return saida;
