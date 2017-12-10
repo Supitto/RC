@@ -32,7 +32,7 @@ ABRE_PARENTESES : '(';
 FECHA_PARENTESES : ')';
 TRUE: 'true';
 FALSE: 'false';
-ID_OP_RESERVADO : '+' | '-' | '/' | '*' | 'mod' | 'pow' | 'sqrt';
+ID_OP_RESERVADO : '+' | '-' | '/' | '*' | 'mod' | 'pow' | 'sqrt' | 'and' | 'or' | 'not';
 LITERAL : '"' ~('\r' | '\n' | '"')* '"' ;
 LET : 'Let';
 BE : 'be';

@@ -100,11 +100,18 @@ public class GeradorCodigo extends rcBaseVisitor<String> {
         // Remocao do operador da lista de argumentos
         else { args.remove(0); }
 
-        // Caso seja um operador binario basico, reescrever in-ordem
+        // Operadores binarios basicos, reescrever in-ordem
         if ((operador.equals("+") || operador.equals("-") || operador.equals("*") ||
-                operador.equals("/") || operador.equals("%")) && args.size() == 2) {
+                operador.equals("/") || operador.equals("%") || operador.equals("&&") ||
+                operador.equals("||")) && args.size() == 2) {
             saida.append("(" + args.get(0) + " " + operador + " " + args.get(1) + ")");
         }
+
+        // Operadores unarios basicos
+        else if ((operador.equals("-") || operador.equals("!")) && args.size() == 1) {
+            saida.append("(" + operador + args.get(0) + ")");
+        }
+
         // Escrita da operacao como chamada de funcao
         else {
             saida.append(operador + "(");
@@ -480,7 +487,12 @@ public class GeradorCodigo extends rcBaseVisitor<String> {
 
             // Escrita do nome do operador reservado
             else if (ctx.ID_OP_RESERVADO() != null) { saida.append(ctx.ID_OP_RESERVADO().getText()); }
-            if (saida.equals("mod")) { saida = new StringBuilder("%"); }
+            if (saida.toString().equals("mod")) { saida = new StringBuilder("%"); }
+            else if (saida.toString().equals("sqrt")) { saida = new StringBuilder("Math.sqrt"); }
+            else if (saida.toString().equals("pow")) { saida = new StringBuilder("Math.pow"); }
+            else if (saida.toString().equals("and")) { saida = new StringBuilder("&&"); }
+            else if (saida.toString().equals("or")) { saida = new StringBuilder("||"); }
+            else if (saida.toString().equals("not")) { saida = new StringBuilder("!"); }
 
             // Escrita dos argumentos da operacao
             for (rcParser.ParametroContext contextoParametro : ctx.parametro()) {
