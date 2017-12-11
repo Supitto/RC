@@ -41,7 +41,7 @@ public class MisterRobot17 extends Robot {
 		}
 		
 		b = __qTempInt.remove();
-		out.println((((((("|" + a) + " ") + b) + "|") + " = ") + _addAbs(a, b)));
+		out.println(_addAbs(a, b));
 	}
 
 	public void loop() {

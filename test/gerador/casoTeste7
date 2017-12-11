@@ -1,13 +1,10 @@
 new robot misterRobot7
-    defop _sqDiff a as integer, b as integer returns floating
+    defop _sqDiff a as floating, b as floating returns floating
         - a b -> pow 2 -> Out
     
-    defop _dist x1 as integer, x2 as integer, 
-			y1 as integer, y2 as integer returns floating
+    defop _dist x1 as floating, x2 as floating, 
+			y1 as floating, y2 as floating returns floating
         _sqDiff x2 x1 -> + (_sqDiff y2 y1) -> sqrt -> Out
-    
-    defop _pontoToLiteral a as integer, b as integer returns literal
-        "(" -> + a -> + ", " -> + b -> + ")" -> Out
         
     defcom Init
 		Let xp be integer
@@ -15,8 +12,7 @@ new robot misterRobot7
         41 -> Assign xp
         42 -> Assign yp
         _dist (_getX) (_getY) xp yp -> Assign dist
-        "Distancia para o ponto" -> + (_pontoToLiteral xp yp) 
-			-> + " = " -> + dist -> Print
+		dist -> Print
     
     defcom Loop
         Ahead(100)

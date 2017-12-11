@@ -13,7 +13,6 @@ new robot misterRobot12
         Let b be integer
         Assign 41 a
         Assign 42 b
-        "|" -> + a -> + " " -> + b -> + "|" 
-        -> + " = " -> + (_addAbs a b) -> Print
+        (_addAbs a b) -> Print
 
 end

@@ -31,7 +31,7 @@ public class MisterRobot12 extends Robot {
 		int b;
 		a = 41;
 		b = 42;
-		out.println((((((("|" + a) + " ") + b) + "|") + " = ") + _addAbs(a, b)));
+		out.println(_addAbs(a, b));
 	}
 
 	public void loop() {
