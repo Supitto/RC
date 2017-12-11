@@ -1,0 +1,27 @@
+new robot misterRobot
+
+    defop _abs a as integer returns integer
+        If a returns integer
+            Is lesser 0 Out (- a)
+            Default Out a
+        -> Out
+    
+    defop _addAbs a as integer, b as integer returns integer
+        Out (+ (_abs a) (_abs b))
+    
+    defcom Init
+        Let a be integer
+        Let b be integer
+		Let c be integer
+		Let d be integer
+        Assign 41 a
+        Assign 42 c
+		Assign 43 d
+		Assign (If c returns integer
+			Is greater d Out c
+			Default Out d) b
+
+        "|" -> + a -> + " " -> + b -> + "|" 
+        -> + " = " -> + (_addAbs a b) -> Print
+
+end
