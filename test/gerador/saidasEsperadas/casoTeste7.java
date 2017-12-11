@@ -10,7 +10,7 @@ public class misterRobot extends Robot {
 		return Math.sqrt((_sqDiff(x2, x1) + _sqDiff(y2, y1)));
 	}
 
-	public String _pointToLiteral(int a, int b) {
+	public String _pontoToLiteral(int a, int b) {
 		return (((("(" + a) + ", ") + b) + ")");
 	}
 
@@ -19,7 +19,7 @@ public class misterRobot extends Robot {
 		int yp;
 		xp = 41;
 		yp = 42;
-		dist = _dist(_getX(), _getY(), xp, yp);
+		dist = _dist(getX(), getY(), xp, yp);
 		out.println(((("Distancia para o ponto" + _pontoToLiteral(xp, yp)) + " = ") + dist));
 	}
 

@@ -3,7 +3,7 @@ new robot misterRobot
 			y1 as integer, y2 as integer returns floating
         x2 -> - x1 -> pow 2 -> + (y2 -> - y1 -> pow 2) -> sqrt -> Out
     
-    defop _pointToLiteral a as integer, b as integer returns literal
+    defop _pontoToLiteral a as integer, b as integer returns literal
         "(" -> + a -> + ", " -> + b -> + ")" -> Out
         
     defcom Init
