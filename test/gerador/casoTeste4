@@ -1,4 +1,4 @@
-new robot misterRobot
+new robot misterRobot4
 	defcom PrintNum numA as integer, numB as integer
 		Assign numA numB
 		Print numB

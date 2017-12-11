@@ -4,7 +4,7 @@ import robocode.*;
 import java.util.Queue;
 import java.util.LinkedList;
 
-public class misterRobot extends Robot {
+public class MisterRobot14 extends Robot {
 
 	public int _addAbs(int a, int b) {
 		Queue<Integer> __qTempInt = new LinkedList<>();

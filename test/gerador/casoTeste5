@@ -1,4 +1,4 @@
-new robot misterRobot
+new robot misterRobot5
 	defop _soma a as integer, b as integer returns integer
 		a -> + b -> Out
 	

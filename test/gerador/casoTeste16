@@ -1,4 +1,4 @@
-new robot misterRobot
+new robot misterRobot16
     
     defop _addAbs a as integer, b as integer returns integer
         If (If a returns logical

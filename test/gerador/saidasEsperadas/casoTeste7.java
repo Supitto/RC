@@ -2,7 +2,7 @@ package robosGerados;
 
 import robocode.*;
 
-public class misterRobot extends Robot {
+public class MisterRobot7 extends Robot {
 
 	public double _sqDiff(int a, int b) {
 		return Math.pow((a - b), 2);

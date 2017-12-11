@@ -1,4 +1,4 @@
-new robot misterRobot
+new robot misterRobot11
 
     defop _abs a as integer returns integer
         If a returns integer

@@ -1,4 +1,4 @@
-new robot misterRobot
+new robot misterRobot19
     defcom Loop
         Ahead 100
         TurnGunRight 360

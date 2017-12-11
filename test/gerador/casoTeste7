@@ -1,4 +1,4 @@
-new robot misterRobot
+new robot misterRobot7
     defop _sqDiff a as integer, b as integer returns floating
         - a b -> pow 2 -> Out
     

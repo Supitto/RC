@@ -2,7 +2,7 @@ package robosGerados;
 
 import robocode.*;
 
-public class misterRobot extends Robot {
+public class MisterRobot6 extends Robot {
 
 	public int _soma(int a, int b, int c) {
 		return (a + (b + c));

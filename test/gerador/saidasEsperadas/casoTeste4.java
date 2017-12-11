@@ -2,7 +2,7 @@ package robosGerados;
 
 import robocode.*;
 
-public class misterRobot extends Robot {
+public class MisterRobot4 extends Robot {
 
 	public void printNum(int numA, int numB) {
 		numB = numA;
