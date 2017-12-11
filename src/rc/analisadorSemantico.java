@@ -19,8 +19,11 @@ public class analisadorSemantico extends rcBaseVisitor<String>
         try {
             main.tv.InsereVariavel(ctx.ID().getText(),ctx.TYPE().getText());
         } catch (noTableException e) {
-            e.printStackTrace();
+            main.code+="ERRO: Não é possivel declarar a variavel "+ctx.ID().getText()+" aqui";
+        } catch (alreadyDefiniedException e) {
+            main.code+="ERRO: Não é possivel declarar a variavel "+ctx.ID().getText()+" pois ela ja existe nesse escopo";
         }
+
         return super.visitDeclaracao(ctx);
     }
 
@@ -75,11 +78,11 @@ public class analisadorSemantico extends rcBaseVisitor<String>
                 try {
                     tipo_atual = main.to.ChecaOperacao(ctx.op(i).ID_OPERADOR().getText(),args);
                 } catch (tabelaDeOperacoes.OperationNotFoundException e) {
-                    e.printStackTrace();
+                    main.code+="ERRO: A operação "+e.nome+" não foi encontrada";
                 } catch (tabelaDeOperacoes.MismatchingArgCountException e) {
-                    e.printStackTrace();
+                    main.code+="ERRO: A quantidade de argumentos passados é diferente da esperada";
                 } catch (tabelaDeOperacoes.MismatchingArgException e) {
-                    e.printStackTrace();
+                    main.code+="ERRO: O argumento de numero "+e.pos+" não corresponde com "+e.arg;
                 }
             }
 
@@ -114,9 +117,9 @@ public class analisadorSemantico extends rcBaseVisitor<String>
             try {
                 return main.tv.RetornaTipo(ctx.ID().getText());
             } catch (noTableException e) {
-                e.printStackTrace();
+                main.code+="ERRO: Não se pode referenciar uma variavel sem estar em um escopo";
             } catch (nonExistentVariableException e) {
-                e.printStackTrace();
+                main.code+="ERRO: A variavel "+e.nome+" não foi previamente declarada";
             }
         return "literal";
 
@@ -124,12 +127,19 @@ public class analisadorSemantico extends rcBaseVisitor<String>
 
     @Override
     public String visitDefcom(rcParser.DefcomContext ctx) {
+        main.tv.EmpilhaEscopo();
         String [] args = new String[ctx.args().arg().size()+1];
         for (int i = 0; i < args.length; i++) {
             args[i] = visitArg(ctx.args().arg(i));
         }
         main.tc.InsereComando(ctx.ID_COMANDO().getText(),args);
-        return super.visitDefcom(ctx);
+        visitCorpo(ctx.corpo());
+        try {
+            main.tv.DesempilhaEscopo();
+        } catch (noTableException e) {
+            e.printStackTrace();
+        }
+        return "";
     }
 
     @Override
@@ -139,17 +149,40 @@ public class analisadorSemantico extends rcBaseVisitor<String>
 
     @Override
     public String visitDefop(rcParser.DefopContext ctx) {
-
+        main.tv.EmpilhaEscopo();
         String [] args = new String[ctx.args().arg().size()];
         for (int i = 0; i < args.length; i++) {
             args[i] = visitArg(ctx.args().arg(i));
+            args[i] = visitArg(ctx.args().arg(i));
+            try {
+                main.tv.InsereVariavel(ctx.args().arg(i).ID().getText(),args[i]);
+            } catch (noTableException e) {
+                main.code+="ERRO: Não se pode referenciar uma variavel sem estar em um escopo";
+            } catch (alreadyDefiniedException e) {
+                main.code+="ERRO: A variavel "+e.nome+" ja existe e não pode ser redeclarada";
+            }
         }
+        visitRetorno(ctx.retorno());
         try {
             main.to.InsereOperacao(ctx.ID_OPERADOR().getText(),ctx.TYPE().getText(),args);
         } catch (tabelaDeOperacoes.OperationAlreadyExistsException e) {
             e.printStackTrace();
         }
-        return super.visitDefop(ctx);
+        try {
+            main.tv.DesempilhaEscopo();
+        } catch (noTableException e) {
+            e.printStackTrace();
+        }
+        return "";
+    }
+
+    @Override
+    public String visitRetorno(rcParser.RetornoContext ctx) {
+        if(ctx.composicao_seta() != null)
+        {
+            return visitComposicao_seta(ctx.composicao_seta());
+        }
+        return super.visitParametro(ctx.parametro());
     }
 
     @Override

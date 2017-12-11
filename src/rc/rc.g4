@@ -21,18 +21,25 @@ comando : (ID_COMANDO_RESERVADO | ID_COMANDO) parametro*;
 parametro : ABRE_PARENTESES composicao_seta_argumento FECHA_PARENTESES | valor;
 op_ini : valor | op;
 op : (ID_OP_RESERVADO | ID_OPERADOR) parametro* | if_statement;
+
+op_if : ID_OP_RELACIONAL parametro*;
+
 valor : NUMERO | LITERAL | LOGICO | ID ;
 NUMERO : NUMBER | FLOAT_NUMBER;
 FLOAT_NUMBER : NUMBER '.' NUMBER;
 LOGICO : TRUE|FALSE;
-if_statement : IF parametro? RETURNS TYPE ('Is' parametro corpo OUT parametro?)+ 'Default' corpo OUT parametro?;
+// if_statement : IF parametro? RETURNS TYPE ('Is' parametro corpo OUT parametro?)+ 'Default' corpo OUT parametro?;
+if_statement : IF parametro? RETURNS TYPE ('Is' op_if retorno)+ 'Default' retorno;
 IF: 'If';
 TYPE : 'integer'| 'literal'| 'floating'| 'logical';
 ABRE_PARENTESES : '(';
 FECHA_PARENTESES : ')';
 TRUE: 'true';
 FALSE: 'false';
-ID_OP_RESERVADO : '+' | '-' | '/' | '*' | 'mod';
+
+ID_OP_RELACIONAL : 'equal' | 'lesser' | 'greater' ;
+ID_OP_RESERVADO : '+' | '-' | '/' | '*' | 'mod' | 'pow' | 'sqrt' | 'and' | 'or' | 'not';
+
 LITERAL : '"' ~('\r' | '\n' | '"')* '"' ;
 LET : 'Let';
 BE : 'be';
@@ -46,8 +53,8 @@ FIM : 'end';
 OP_SETA : '→'|'->';
 OUT: 'Out';
 ID_COMANDO_RESERVADO : 'Assign' | OUT | 'Print';
-ID_COMANDO : [A-Z]+ ([a-z] | [A-Z])*;
-ID     : ([a-z] | [A-Z])+ ;
-ID_OPERADOR : '_' ([a-z] | [A-Z])+;
+ID_COMANDO : [A-Z]+ ([a-z] | [A-Z] | [0-9])*;
+ID     : [a-z] ([a-z] | [A-Z] | [0-9])* ;
+ID_OPERADOR : '_' ([a-z] | [A-Z] | [0-9])+;
 NUMBER : [0-9]+ ;
 WS     : [ \n\t]+ -> skip;

@@ -190,6 +190,16 @@ public interface rcListener extends ParseTreeListener {
 	 */
 	void exitOp(rcParser.OpContext ctx);
 	/**
+	 * Enter a parse tree produced by {@link rcParser#op_if}.
+	 * @param ctx the parse tree
+	 */
+	void enterOp_if(rcParser.Op_ifContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link rcParser#op_if}.
+	 * @param ctx the parse tree
+	 */
+	void exitOp_if(rcParser.Op_ifContext ctx);
+	/**
 	 * Enter a parse tree produced by {@link rcParser#valor}.
 	 * @param ctx the parse tree
 	 */

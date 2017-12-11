@@ -11,15 +11,17 @@ public class tabelaDeVariaveis
     {
     }
 
-    public void InsereVariavel(String nome, String tipo) throws noTableException {
+    public void InsereVariavel(String nome, String tipo) throws noTableException, alreadyDefiniedException {
         if(pilha.size()<0)
             throw new noTableException();
+        if(pilha.peek().containsKey(nome))
+            throw new alreadyDefiniedException(nome);
         pilha.peek().put(nome,tipo);
     }
 
     public Boolean ChecaTipoTopo(String nome,String tipo) throws nonExistentVariableException {
         if(!pilha.peek().containsKey(nome))
-            throw new nonExistentVariableException();
+            throw new nonExistentVariableException(nome);
         return pilha.peek().get(nome).equals(tipo);
     }
 
@@ -27,7 +29,7 @@ public class tabelaDeVariaveis
         if(pilha.size()<0)
             throw new noTableException();
         if(!pilha.peek().containsKey(nome))
-            throw new nonExistentVariableException();
+            throw new nonExistentVariableException(nome);
         return pilha.peek().get(nome);
     }
 
@@ -57,8 +59,20 @@ class noTableException extends Exception
 
 class nonExistentVariableException extends Exception
 {
-    public nonExistentVariableException()
+    String nome;
+    public nonExistentVariableException(String nome)
     {
         super("A variavel que você procura não existe neste escopo");
+        nome = nome;
+    }
+}
+
+class alreadyDefiniedException extends Exception
+{
+    String nome;
+    public  alreadyDefiniedException(String nome)
+    {
+        super("");
+        nome = nome;
     }
 }
