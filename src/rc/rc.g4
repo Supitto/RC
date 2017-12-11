@@ -4,8 +4,8 @@ grammar rc;
 package rc;
 }
 programa : decl_jogo | decl_robo ;
-decl_jogo : NOVO_JOGO ID defop* defcom* FIM ;
-decl_robo : NOVO_ROBO ID defop* defcom* FIM ;
+decl_jogo : NOVO_JOGO ID defop* defcom* defev* FIM ;
+decl_robo : NOVO_ROBO ID defop* defcom* defev* FIM ;
 defop: DEFOP ID_OPERADOR args? RETURNS TYPE retorno;
 defcom: DEFCOM ID_COMANDO args? corpo;
 defev : DEFEVE ID_EV corpo;
