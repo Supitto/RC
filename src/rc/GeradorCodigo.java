@@ -18,6 +18,16 @@ public class GeradorCodigo extends rcBaseVisitor<String> {
     // Variavel auxiliar que armazena os tipos de fila que devem ser criados para os metodos
     public Set<String> tiposFila = new HashSet<>();
 
+    // Variavel auxiliar utilizada para armazenar operacoes declaradas
+    public Set<String> opDeclaradas = new HashSet<>();
+
+    // Variavel auxiliar utilizada para armazenar nomes de variaveis declaradas em evento
+    // Fora de evento, essa variavel se torna nula
+    public Set<String> varDeclaradas = null;
+
+    // Variavel auxiliar que armazena o nome do package em que o codigo sera gerado
+    public String nomePackage = "robosGerados";
+
     // Metodos auxiliares
     // ==========================================================================================================
 
@@ -282,6 +292,12 @@ public class GeradorCodigo extends rcBaseVisitor<String> {
 
     // Geracao do codigo do robo, dado a especificacao do codigo
     private void gerarCodigoRobo(CodigoRobo codigoRobo) {
+        // Escrita do nome do package
+        if (!this.nomePackage.equals("")) {
+            adicionarLinha("package " + nomePackage + ";", 0);
+            this.codigo += "\n";
+        }
+
         // Verificacao dos imports para as filas
         boolean importFilas = false;
         for (Map.Entry<String, Codigo.Metodo> metodo : codigoRobo.getMetodos()) {
@@ -334,8 +350,10 @@ public class GeradorCodigo extends rcBaseVisitor<String> {
     public String visitDecl_robo(rcParser.Decl_roboContext ctx) {
         this.codigoRobo = new CodigoRobo(ctx.ID().getText());
 
+        // Passar pelas definicoes de operacoes, comandos e eventos
         for (rcParser.DefopContext contextoDefop : ctx.defop()) { visitDefop(contextoDefop); }
         for (rcParser.DefcomContext contextoDefcom : ctx.defcom()) { visitDefcom(contextoDefcom); }
+        for (rcParser.DefevContext contextoDefev : ctx.defev()) { visitDefev(contextoDefev); }
 
         this.gerarCodigoRobo(this.codigoRobo);
         return null;
@@ -345,7 +363,7 @@ public class GeradorCodigo extends rcBaseVisitor<String> {
     public String visitDefcom(rcParser.DefcomContext ctx) {
         String nomeComando = ctx.ID_COMANDO().getText();
 
-        // Obtencao dos parametros e dos parametros e das instrucoes do comando
+        // Obtencao dos parametros e das instrucoes do comando
         VisitorsAuxiliares visitorsAuxiliares = new VisitorsAuxiliares();
         ArrayList<Map.Entry<String, String>> parametros = new ArrayList<>();
         ArrayList<Map.Entry<String, String>> instrucoes = new ArrayList<>();
@@ -394,6 +412,10 @@ public class GeradorCodigo extends rcBaseVisitor<String> {
     @Override
     public String visitDefop(rcParser.DefopContext ctx) {
         String nomeOperacao = ctx.ID_OPERADOR().getText();
+
+        // Adicao do nome da operacao na lista de operacoes
+        this.opDeclaradas.add(nomeOperacao);
+
         String tipoRetorno = this.converterTipoPrimitivo(ctx.TYPE().getText());
 
         VisitorsAuxiliares visitorsAuxiliares = new VisitorsAuxiliares();
@@ -423,6 +445,59 @@ public class GeradorCodigo extends rcBaseVisitor<String> {
         }
 
         this.codigoRobo.addOperacao(nomeOperacao, parametros, tipoRetorno, linhas, tiposFila);
+
+        return null;
+    }
+
+    @Override
+    public String visitDefev(rcParser.DefevContext ctx) {
+        // Inicializacao do conjunto de variaveis
+        this.varDeclaradas = new HashSet<>();
+
+        String nomeEvento = ctx.ID_EV().getText();
+
+        // Obtencao das instrucoes do evento
+        VisitorsAuxiliares visitorsAuxiliares = new VisitorsAuxiliares();
+        ArrayList<Map.Entry<String, String>> instrucoes = new ArrayList<>();
+
+        if (ctx.corpo() != null) { instrucoes = visitorsAuxiliares.visitCorpo(ctx.corpo()); }
+
+        ArrayList<String> linhas = new ArrayList<>();
+
+        // Escrita dos if_statements auxiliares
+        ArrayList<String> ifStatements = new ArrayList<>(Arrays.asList(this.aux.split("\n",-1)));
+        // Remocao da ultima quebra de linha
+        ifStatements.remove(ifStatements.size() - 1);
+        linhas.addAll(ifStatements);
+        aux = "";
+
+        // Escrita das filas que serao utilizadas
+        List<String> tiposFila = new ArrayList<>();
+        tiposFila.addAll(this.tiposFila);
+        this.tiposFila = new HashSet<>();
+
+        // Determinacao das instrucoes obtidas
+        for (Map.Entry<String, String> instrucao : instrucoes) { linhas.add(instrucao.getValue()); }
+
+        // Nome do metodo com primeira letra minuscula
+        nomeEvento = Character.toLowerCase(nomeEvento.charAt(1)) + nomeEvento.substring(2);
+
+        // Evento possui como parametro apenas o evento
+        // Nome do evento igual ao que estiver depois do "on" no nome do metodo
+        String tipoParametro;
+        if (nomeEvento.length() >= 3) { tipoParametro = nomeEvento.substring(2); }
+        else { tipoParametro = ""; }
+        tipoParametro += "Event";
+
+        // Escrita do parametro em uma lista de parametros para a passagem no procedimento
+        ArrayList<Map.Entry<String, String>> parametros = new ArrayList<>();
+        parametros.add(new java.util.AbstractMap.SimpleEntry<>("e", tipoParametro));
+
+        // Tratar evento como se fosse um comando
+        this.codigoRobo.addComando(nomeEvento, parametros, linhas, tiposFila);
+
+        // Liberacao do conjunto de variaveis declaradas
+        this.varDeclaradas = null;
 
         return null;
     }
@@ -511,8 +586,12 @@ public class GeradorCodigo extends rcBaseVisitor<String> {
     public String visitDeclaracao(rcParser.DeclaracaoContext ctx) {
         String saida;
 
+        // Escrita do nome da variavel no conjunto de variaveis declaradas, se estiver em evento
+        if (this.varDeclaradas != null) { varDeclaradas.add(ctx.ID().getText()); }
+
         saida = converterTipoPrimitivo(ctx.TYPE().getText());
         saida += " " + ctx.ID().getText();
+        saida += ";";
 
         return saida;
     }
@@ -652,6 +731,12 @@ public class GeradorCodigo extends rcBaseVisitor<String> {
             else if (saida.toString().equals("or")) { saida = new StringBuilder("||"); }
             else if (saida.toString().equals("not")) { saida = new StringBuilder("!"); }
 
+            // Se operacao nao foi declarada, supoe-se que seja funcao do RoboCode
+            // Nesse caso, omite-se o "_"
+            else if (!this.opDeclaradas.contains(saida.toString())) {
+                saida = new StringBuilder(saida.toString().substring(1));
+            }
+
             // Escrita dos argumentos da operacao
             for (rcParser.ParametroContext contextoParametro : ctx.parametro()) {
                 saida.append(" " + visitParametro(contextoParametro));
@@ -769,7 +854,19 @@ public class GeradorCodigo extends rcBaseVisitor<String> {
         if (ctx.NUMERO() != null) { saida = ctx.NUMERO().getText(); }
         else if (ctx.LITERAL() != null) { saida =  ctx.LITERAL().getText(); }
         else if (ctx.LOGICO() != null) { saida = ctx.LOGICO().getText(); }
-        else if (ctx.ID() != null) { saida =  ctx.ID().getText(); }
+        else if (ctx.ID() != null) {
+            saida =  ctx.ID().getText();
+
+            // Verificacao no conjunto de variaveis declaradas, se estiver em um evento
+            if (this.varDeclaradas != null) {
+                // Se variavel nao estiver no conjunto, supoe-se que pertence ao evento
+                // Nesse caso, supoe-se que variavel seja acessivel pelo metodo get
+                if (!varDeclaradas.contains(saida)) {
+                    saida = Character.toUpperCase(saida.charAt(0)) + saida.substring(1);
+                    saida = "e.get" + saida + "()";
+                }
+            }
+        }
 
         return saida;
     }
