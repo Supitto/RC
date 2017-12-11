@@ -100,7 +100,7 @@ public class analisadorSemantico extends rcBaseVisitor<String>
         if(ctx.NUMERO() != null) {
             try {
                 Integer.parseInt(ctx.NUMERO().getText());
-                return "integr";
+                return "integer";
             }
             catch (NumberFormatException e)
             {
@@ -150,5 +150,12 @@ public class analisadorSemantico extends rcBaseVisitor<String>
             e.printStackTrace();
         }
         return super.visitDefop(ctx);
+    }
+
+    @Override
+    public String visitRetorno(rcParser.RetornoContext ctx) {
+        if(ctx.composicao_seta() != null)
+            return visitComposicao_seta(ctx.composicao_seta());
+        return visitParametro(ctx.parametro());
     }
 }
