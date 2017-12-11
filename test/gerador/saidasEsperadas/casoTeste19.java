@@ -1,3 +1,5 @@
+package robosGerados;
+
 import robocode.*; 
 
 public class misterRobot extends Robot {

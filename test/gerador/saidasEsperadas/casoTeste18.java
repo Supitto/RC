@@ -1,3 +1,5 @@
+package robosGerados;
+
 import robocode.*; 
 
 public class misterRobot extends Robot {
@@ -6,10 +8,10 @@ public class misterRobot extends Robot {
 		fire(1);
 	}	
 
-	void init() {
+	public void init() {
 	}
 
-	void loop() {
+	public void loop() {
 		ahead(100);
 		turnGunRight(360);
 		back(100);
@@ -18,7 +20,7 @@ public class misterRobot extends Robot {
 
 	public void run() {
 		init();
-		while (true) { loop(); }
+		while(true) { loop(); }
 	}
 
 }

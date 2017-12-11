@@ -1,3 +1,5 @@
+package robosGerados;
+
 import robocode.*;
 import java.util.Queue;
 import java.util.LinkedList;
@@ -24,10 +26,10 @@ public class misterRobot extends Robot {
 	public void init() {
 		Queue<Integer> __qTempInt = new LinkedList<>();
 		
-		int a
-		int b
-		int c
-		int d
+		int a;
+		int b;
+		int c;
+		int d;
 		a = 41;
 		c = 42;
 		d = 43;
