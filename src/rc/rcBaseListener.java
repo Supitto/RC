@@ -234,6 +234,18 @@ public class rcBaseListener implements rcListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
+	@Override public void enterOp_if(rcParser.Op_ifContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitOp_if(rcParser.Op_ifContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
 	@Override public void enterValor(rcParser.ValorContext ctx) { }
 	/**
 	 * {@inheritDoc}

@@ -121,6 +121,12 @@ public interface rcVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitOp(rcParser.OpContext ctx);
 	/**
+	 * Visit a parse tree produced by {@link rcParser#op_if}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitOp_if(rcParser.Op_ifContext ctx);
+	/**
 	 * Visit a parse tree produced by {@link rcParser#valor}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
