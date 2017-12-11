@@ -8,6 +8,7 @@ decl_jogo : NOVO_JOGO ID defop* defcom* FIM ;
 decl_robo : NOVO_ROBO ID defop* defcom* FIM ;
 defop: DEFOP ID_OPERADOR args? RETURNS TYPE retorno;
 defcom: DEFCOM ID_COMANDO args? corpo;
+defev : DEFEVE ID_EV corpo;
 arg: ID AS TYPE;
 args: (arg (',' arg)*);
 retorno: composicao_seta OUT | OUT parametro;
@@ -37,6 +38,9 @@ FECHA_PARENTESES : ')';
 TRUE: 'true';
 FALSE: 'false';
 
+
+DEFEVE: 'defev';
+ID_EV : '@'ID;
 ID_OP_RELACIONAL : 'equal' | 'lesser' | 'greater' ;
 ID_OP_RESERVADO : '+' | '-' | '/' | '*' | 'mod' | 'pow' | 'sqrt' | 'and' | 'or' | 'not';
 
