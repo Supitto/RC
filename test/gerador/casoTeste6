@@ -7,8 +7,8 @@ new robot misterRobot
     
     defcom Init
         Let soma be integer
-        _soma 1 2 3 -> + (+ 5 6) -> Assign a
-        PrintSoma a 6 7
+        _soma 1 2 3 -> + (+ 4 5) -> Assign soma
+        PrintSoma soma 6 7
     
     defcom Loop
     

@@ -1,9 +1,6 @@
 package rc;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class GeradorCodigo extends rcBaseVisitor<String> {
 
@@ -13,6 +10,13 @@ public class GeradorCodigo extends rcBaseVisitor<String> {
 
     // Codigo gerado pelos visitors
     public String codigo = "";
+
+    // String auxiliar para armazenar os if_statements gerados
+    // Primeira linha contem os tipos de fila necessarios
+    public String aux = "";
+
+    // Variavel auxiliar que armazena os tipos de fila que devem ser criados para os metodos
+    public Set<String> tiposFila = new HashSet<>();
 
     // Metodos auxiliares
     // ==========================================================================================================
@@ -40,26 +44,87 @@ public class GeradorCodigo extends rcBaseVisitor<String> {
         return saida;
     }
 
+    // Separacao do operador e dos argumentos de uma instrucao em uma lista
+    // Entrada: chamada da instrucao, com membros (operador e argumentos) separados por espaco
+    private List<String> separarInstrucao(String instrucao) {
+        List<String> saida = new ArrayList<>();
+
+        // Retorna caso a instrucao seja nula
+        if (instrucao == null) { return saida; }
+
+        // Espacos em strings nao devem ser considersgados
+        // Variavel de estado que determina se o leitor esta dentro de uma string
+        boolean dentroString = false;
+        // Variavel de estado que determina o nivel atual de parenteses
+        int nivelParenteses = 0;
+        // Variavel que determina o inicio da string sendo escrita
+        int inicio = 0;
+        // Variavel que indica o fim da string
+        boolean fimString = false;
+
+        for (int i = 0; i < instrucao.length(); i++) {
+            char atual = instrucao.charAt(i);
+
+            // Altera a variavel de estado para cada delimitador de string encontrado
+            if (atual == '\"') { dentroString = !dentroString; }
+            // Incrementa nivel de parenteses para cada abertura e decrementa para cada fechamento
+            else if (atual == '(') { nivelParenteses += 1; }
+            else if (atual == ')') { nivelParenteses -= 1; }
+
+
+            // Verifica se o final da string foi atingido
+            fimString = (i == (instrucao.length() - 1));
+
+            // Escreve a string atual na lista, caso encontre espaco ou o fim da instrucao
+            if (atual == ' ' && !dentroString && nivelParenteses == 0) {
+                saida.add(instrucao.substring(inicio, i));
+                inicio = i + 1;
+            }
+            else if (fimString) { saida.add(instrucao.substring(inicio)); }
+        }
+
+        return saida;
+    }
+
     // Conversao de operacao para chamada de metodo ou operacao basica
     // Operador e argumentos devem estar separados por espaco
-    private String converterOperacao(String operacao) {
+    private String converterOperacao(String operacao, String argumentoAdicional) {
         StringBuilder saida = new StringBuilder();
 
-        // Lista de argumentos da operacao, separados por espaco
-        List<String> args = new ArrayList<>(Arrays.asList(operacao.split(" ")));
+        // Lista contendo operador e argumentos da operacao, separados por espaco
+        List<String> args = new ArrayList<>(separarInstrucao(operacao));
 
         // Extracao do operador a partir da lista
         String operador = args.get(0);
-        args.remove(0);
 
-        // Caso seja um operador binario basico, reescrever in-ordem
+        // Adicao do argumento adicional ao metodo, caso houver
+        if (!argumentoAdicional.equals("")) {
+            args.set(0, argumentoAdicional);
+        }
+        // Remocao do operador da lista de argumentos
+        else { args.remove(0); }
+
+        // Operadores binarios basicos, reescrever in-ordem
         if ((operador.equals("+") || operador.equals("-") || operador.equals("*") ||
-                operador.equals("/") || operador.equals("%")) && args.size() == 2) {
+                operador.equals("/") || operador.equals("%") || operador.equals("&&") ||
+                operador.equals("||")) && args.size() == 2) {
             saida.append("(" + args.get(0) + " " + operador + " " + args.get(1) + ")");
         }
+
+        // Operadores relacionais basicos, reescrever in-ordem
+        else if ((operador.equals("==") || operador.equals("<") || operador.equals(">"))
+                && args.size() == 2) {
+            saida.append("(" + args.get(0) + " " + operador + " " + args.get(1) + ")");
+        }
+
+        // Operadores unarios basicos
+        else if ((operador.equals("-") || operador.equals("!")) && args.size() == 1) {
+            saida.append("(" + operador + args.get(0) + ")");
+        }
+
         // Escrita da operacao como chamada de funcao
         else {
-            saida.append(operacao + "(");
+            saida.append(operador + "(");
             boolean removerVirgula = args.size() != 0;
 
             // Escrita dos argumentos da operacao na chamada
@@ -72,17 +137,66 @@ public class GeradorCodigo extends rcBaseVisitor<String> {
         return saida.toString();
     }
 
-    // Adicao de argumento a uma chamada de metodo na primeira posicao
-    // Utilizado para operadores seta
-    private String adicionarArgumento(String metodo, String argumento) {
-        String saida;
+    // Conversao de comando para chamada de metodo
+    // Nome do comando e argumentos devem estar separados por espaco
+    private String converterComando(String comando, String argumentoAdicional) {
+        StringBuilder saida = new StringBuilder();
 
-        // Nome do metodo antes do parenteses
-        String nome = metodo.split("\\(")[0];
-        String args = metodo.split("\\(")[1];
-        saida = nome + "(" + argumento + args;
+        // Lista contendo nome e argumentos da operacao, separados por espaco
+        List<String> args = new ArrayList<>(separarInstrucao(comando));
 
-        return saida;
+        // Extracao do nome do comando a partir da lista
+        String nomeComando = args.get(0);
+
+        // Adicao do argumento adicional ao metodo, caso houver
+        if (!argumentoAdicional.equals("")) {
+            args.set(0, argumentoAdicional);
+        }
+        // Remocao do nome do comando da lista de argumentos
+        else { args.remove(0); }
+
+        if(nomeComando.equals("assign")) {
+            saida.append(args.get(1) + " = " + args.get(0));
+        }
+        else if (nomeComando.equals("out")) {
+            saida.append("return " + args.get(0));
+        }
+        else {
+            if (nomeComando.equals("print")) { nomeComando = "out.println"; }
+            // Escrita do comando como chamada de funcao
+            saida.append(nomeComando + "(");
+            boolean removerVirgula = args.size() != 0;
+
+            // Escrita dos argumentos do comando na chamada
+            for (String arg : args) {
+                saida.append(arg + ", ");
+            }
+            // Remocao da virgula do ultimo parametro para fechamento dos parenteses
+            if (removerVirgula) {
+                saida.setLength(saida.length() - 2);
+            }
+            saida.append(")");
+        }
+
+        return saida.toString();
+    }
+
+    private String adicionarIdentacao(String codigo, int ident) {
+        StringBuilder saida = new StringBuilder();
+
+        // Separacao das linhas do codigo
+        ArrayList<String> linhas = new ArrayList<>(Arrays.asList(codigo.split("\n",-1)));
+        linhas.remove(linhas.size() - 1);
+
+        // Reescrita do codigo com as linhas identadas
+        for (String linha : linhas) {
+            for (int i = 0; i < ident; i++) {
+                saida.append("\t");
+            }
+            saida.append(linha).append("\n");
+        }
+
+        return saida.toString();
     }
 
     // Escrita de uma linha no codigo, dada a ordem de identacao
@@ -102,6 +216,36 @@ public class GeradorCodigo extends rcBaseVisitor<String> {
         }
     }
 
+    private void adicionarDeclFila(String tipo, int ident) {
+        String nomeFila;
+        String tipoFila;
+
+        // Escrita do nome da fila
+        nomeFila = codigoRobo.getNomeFila(tipo);
+
+        // Escrita do tipo de generic como wrapper class
+        switch(tipo) {
+            case "int":
+                tipoFila = "Integer";
+                break;
+            case "double":
+                tipoFila = "Double";
+                break;
+            case "String":
+                tipoFila = "String";
+                break;
+            case "boolean":
+                tipoFila = "Boolean";
+                break;
+            default:
+                tipoFila = "Integer";
+        }
+
+        // Escrita da declaracao da fila
+        String declFila = "Queue<" + tipoFila + "> " + nomeFila + " = new LinkedList<>();";
+        this.adicionarLinha(declFila, ident);
+    }
+
     // Escrita de um metodo, dada a ordem de identacao
     private void adicionarMetodo(String nome, Codigo.Metodo metodo, int ident) {
         StringBuilder linhaDeclaracao = new StringBuilder();
@@ -116,8 +260,21 @@ public class GeradorCodigo extends rcBaseVisitor<String> {
         if (removerVirgula) { linhaDeclaracao.setLength(linhaDeclaracao.length() - 2); }
         linhaDeclaracao.append(") {");
 
-        // Escrita do metodo, com a identacao da classe
         adicionarLinha(linhaDeclaracao.toString(), ident);
+
+        // Adicao das filas auxiliares, coma identacao da classe
+        if (metodo.isFilaInt()) { this.adicionarDeclFila("int", ident + 1); }
+        if (metodo.isFilaDouble()) { this.adicionarDeclFila("double", ident + 1); }
+        if (metodo.isFilaString()) { this.adicionarDeclFila("String", ident + 1); }
+        if (metodo.isFilaBoolean()) { this.adicionarDeclFila("boolean", ident + 1); }
+
+        // Adicao de quebras de linha
+        if (metodo.isFilaInt() || metodo.isFilaDouble() ||
+                metodo.isFilaString() || metodo.isFilaBoolean()) {
+            adicionarLinha("", ident + 1);
+        }
+
+        // Escrita do metodo, com a identacao da classe
         adicionarLinhas(metodo.getLinhas(), ident + 1);
         adicionarLinha("}", ident);
         this.codigo += "\n";
@@ -125,6 +282,21 @@ public class GeradorCodigo extends rcBaseVisitor<String> {
 
     // Geracao do codigo do robo, dado a especificacao do codigo
     private void gerarCodigoRobo(CodigoRobo codigoRobo) {
+        // Verificacao dos imports para as filas
+        boolean importFilas = false;
+        for (Map.Entry<String, Codigo.Metodo> metodo : codigoRobo.getMetodos()) {
+            importFilas = importFilas || metodo.getValue().isFilaInt()
+                    || metodo.getValue().isFilaDouble()
+                    || metodo.getValue().isFilaString()
+                    || metodo.getValue().isFilaBoolean();
+        }
+
+        // Importacao das bibliotecas utilitarias para as filas
+        if (importFilas) {
+            codigoRobo.addImport("import java.util.Queue;");
+            codigoRobo.addImport("import java.util.LinkedList;");
+        }
+
         // Geracao dos imports
         adicionarLinhas(codigoRobo.getImports(), 0);
         this.codigo += "\n";
@@ -181,21 +353,40 @@ public class GeradorCodigo extends rcBaseVisitor<String> {
         if (ctx.args() != null) { parametros = visitorsAuxiliares.visitArgs(ctx.args()); }
         if (ctx.corpo() != null) { instrucoes = visitorsAuxiliares.visitCorpo(ctx.corpo()); }
 
-        // Determinacao das linhas a partir das instrucoes obtidas
         ArrayList<String> linhas = new ArrayList<>();
-        for (Map.Entry<String, String> instrucao : instrucoes) { linhas.add(instrucao.getValue() + ";"); }
+
+        // Escrita dos if_statements auxiliares
+        ArrayList<String> ifStatements = new ArrayList<>(Arrays.asList(this.aux.split("\n",-1)));
+        // Remocao da ultima quebra de linha
+        ifStatements.remove(ifStatements.size() - 1);
+        linhas.addAll(ifStatements);
+        aux = "";
+
+        // Escrita das filas que serao utilizadas
+        List<String> tiposFila = new ArrayList<>();
+        tiposFila.addAll(this.tiposFila);
+        this.tiposFila = new HashSet<>();
+
+        // Determinacao das instrucoes obtidas
+        for (Map.Entry<String, String> instrucao : instrucoes) { linhas.add(instrucao.getValue()); }
 
         // Nome do metodo com primeira letra minuscula
         nomeComando = Character.toLowerCase(nomeComando.charAt(0)) + nomeComando.substring(1);
 
         // Criacao do metodo para o comando no codigo do robo
         if (!nomeComando.equals("init") && !nomeComando.equals("loop") && !nomeComando.equals("run")) {
-            this.codigoRobo.addComando(nomeComando, parametros, linhas);
+            this.codigoRobo.addComando(nomeComando, parametros, linhas, tiposFila);
         }
         // Sobrescrita do metodo init
-        else if (nomeComando.equals("init")) { this.codigoRobo.setMetodoInit(linhas); }
+        else if (nomeComando.equals("init")) {
+            this.codigoRobo.setMetodoInitLinhas(linhas);
+            this.codigoRobo.setMetodoInitFilas(tiposFila);
+        }
         // Sobrescrita do metodo loop
-        else if (nomeComando.equals("loop")) { this.codigoRobo.setMetodoLoop(linhas); }
+        else if (nomeComando.equals("loop")) {
+            this.codigoRobo.setMetodoLoopLinhas(linhas);
+            this.codigoRobo.setMetodoLoopFilas(tiposFila);
+        }
 
         return null;
     }
@@ -212,11 +403,26 @@ public class GeradorCodigo extends rcBaseVisitor<String> {
         if (ctx.args() != null) { parametros = visitorsAuxiliares.visitArgs(ctx.args()); }
         if (ctx.retorno() != null) { instrucoes = visitorsAuxiliares.visitRetorno(ctx.retorno()); }
 
-        // Determinacao das linhas a partir das instrucoes obtidas
         ArrayList<String> linhas = new ArrayList<>();
-        for (Map.Entry<String, String> instrucao : instrucoes) { linhas.add(instrucao.getValue() + ";"); }
 
-        this.codigoRobo.addOperacao(nomeOperacao, parametros, tipoRetorno, linhas);
+        // Escrita dos if_statements auxiliares
+        ArrayList<String> ifStatements = new ArrayList<>(Arrays.asList(this.aux.split("\n",-1)));
+        // Remocao da ultima quebra de linha
+        ifStatements.remove(ifStatements.size() - 1);
+        linhas.addAll(ifStatements);
+        aux = "";
+
+        // Escrita das filas que serao utilizadas
+        List<String> tiposFila = new ArrayList<>();
+        tiposFila.addAll(this.tiposFila);
+        this.tiposFila = new HashSet<>();
+
+        // Escrita das instrucoes obtidas
+        for (Map.Entry<String, String> instrucao : instrucoes) {
+            linhas.add(instrucao.getValue() + ";");
+        }
+
+        this.codigoRobo.addOperacao(nomeOperacao, parametros, tipoRetorno, linhas, tiposFila);
 
         return null;
     }
@@ -246,14 +452,18 @@ public class GeradorCodigo extends rcBaseVisitor<String> {
         @Override
         public ArrayList<Map.Entry<String, String>> visitCorpo(rcParser.CorpoContext ctx) {
             // Armazenamento das instrucoes contidas no corpo em linhas
-            ArrayList<Map.Entry<String, String>> instrucoes = new ArrayList<>();
+            ArrayList<Map.Entry<String, String>> corpo = new ArrayList<>();
 
             for (rcParser.InstrucaoContext contextoInstrucao : ctx.instrucao()) {
                 String instrucao = GeradorCodigo.this.visitInstrucao(contextoInstrucao);
-                instrucoes.add(new java.util.AbstractMap.SimpleEntry<>("instrucao", instrucao));
+                List<String> instrucoes = new ArrayList<>(Arrays.asList(instrucao.split("\n", -1)));
+
+                for (String instr : instrucoes) {
+                    corpo.add(new java.util.AbstractMap.SimpleEntry<>("instrucao", instr));
+                }
             }
 
-            return instrucoes;
+            return corpo;
         }
 
         @Override
@@ -269,6 +479,7 @@ public class GeradorCodigo extends rcBaseVisitor<String> {
             else {
                 instrucao = "return " + GeradorCodigo.this.visitComposicao_seta(ctx.composicao_seta());
             }
+
             retorno.add(new java.util.AbstractMap.SimpleEntry<>("instrucao", instrucao));
 
             return retorno;
@@ -281,7 +492,8 @@ public class GeradorCodigo extends rcBaseVisitor<String> {
     public String visitInstrucao(rcParser.InstrucaoContext ctx) {
         String saida = "";
 
-        if (ctx.composicao() != null) { saida = visitComposicao(ctx.composicao()); }
+        if (ctx.declaracao() != null) { saida = visitDeclaracao(ctx.declaracao()); }
+        else if (ctx.composicao() != null) { saida = visitComposicao(ctx.composicao()); }
 
         return saida;
     }
@@ -296,16 +508,28 @@ public class GeradorCodigo extends rcBaseVisitor<String> {
     }
 
     @Override
-    public String visitComposicao(rcParser.ComposicaoContext ctx) {
-        // Caso mais basico: chamada direta para um comando com parametros
-        // TODO: composicao de seta para o comando
+    public String visitDeclaracao(rcParser.DeclaracaoContext ctx) {
         String saida;
 
-        saida = visitComando(ctx.comando());
+        saida = converterTipoPrimitivo(ctx.TYPE().getText());
+        saida += " " + ctx.ID().getText();
+
+        return saida;
+    }
+
+    @Override
+    public String visitComposicao(rcParser.ComposicaoContext ctx) {
+        String saida;
+
+        String argumento = "";
         if (ctx.composicao_seta() != null) {
-            String argumento = visitComposicao_seta(ctx.composicao_seta());
-            saida = adicionarArgumento(saida, argumento);
+            argumento = visitComposicao_seta(ctx.composicao_seta());
         }
+
+        String comando = converterComando(visitComando(ctx.comando()), argumento) + ";";
+
+        saida = this.aux + comando;
+        this.aux = "";
 
         return saida;
     }
@@ -314,37 +538,14 @@ public class GeradorCodigo extends rcBaseVisitor<String> {
     public String visitComando(rcParser.ComandoContext ctx) {
         StringBuilder saida = new StringBuilder();
 
-        // Caso mais basico: Chamada direta para um comando com parametros
-        // TODO: comando contendo composicao_seta_argumento
         String nomeMetodo = (ctx.ID_COMANDO() != null) ? ctx.ID_COMANDO().getText() :
                                                          ctx.ID_COMANDO_RESERVADO().getText();
-        // Escrita do nome do metodo comecando com letra minuscula
+
         nomeMetodo = Character.toLowerCase(nomeMetodo.charAt(0)) + nomeMetodo.substring(1);
 
-        // Comando de atribuicao
-        if (nomeMetodo.equals("assign")) {
-            saida.append(visitParametro(ctx.parametro(1)) + " = " + visitParametro(ctx.parametro(0)));
-        }
-        // Comando de retorno
-        else if (nomeMetodo.equals("out")) {
-            saida.append("return " + visitParametro(ctx.parametro(0)));
-        }
-        // Comandos parametrizados
-        else {
-            // Comando print
-            if (nomeMetodo.equals("print")) { nomeMetodo = "out.println"; }
-
-            saida.append(nomeMetodo);
-
-            saida.append("(");
-            boolean removerVirgula = (ctx.parametro().size() != 0);
-            // Escrita dos parametros separados por virgula
-            for (rcParser.ParametroContext contextoParametro : ctx.parametro()) {
-                saida.append(visitParametro(contextoParametro) + ", ");
-            }
-            // Remocao da virgula do ultimo parametro para fechamento dos parenteses
-            if (removerVirgula) { saida.setLength(saida.length() - 2); }
-            saida.append(")");
+        saida.append(nomeMetodo);
+        for (rcParser.ParametroContext contextoParametro : ctx.parametro()) {
+            saida.append(" " + visitParametro(contextoParametro));
         }
 
         return saida.toString();
@@ -362,17 +563,31 @@ public class GeradorCodigo extends rcBaseVisitor<String> {
 
         // Escrita da operacao inicial
         if (ctx.op_ini().valor() != null) { argumento = visitOp_ini(ctx.op_ini()); }
-        else { argumento = this.converterOperacao(ctx.op_ini().getText()); }
+        else { argumento = this.converterOperacao(visitOp_ini(ctx.op_ini()), ""); }
 
         // Escrita das operacoes restantes
         // Passa-se a operacao do lado esquerdo da seta como argumento para a proxima
         StringBuilder operacao;
         for (rcParser.OpContext contextoOp : ctx.op()) {
+            // Armazenamento do valor das linhas auxiliares
+            String auxAnterior = this.aux;
+            this.aux = "";
+
             // Realocacao da operacao para a operacao nova
             String op = visitOp(contextoOp);
 
+            // Se a operacao for um if_statement, escrever argumentos e adiciona-los na fila
+            if (contextoOp.if_statement() != null) {
+                // Substituicao do primeiro argumento, caso op seja if
+                // Escrita dos if_statements anteriores como argumentos do atual
+                this.aux = this.aux.replaceAll(" _ ", argumento).replaceAll("_\n\n", auxAnterior);
+                argumento = "";
+            }
+            // Caso contrario, retornar o valor anterior de aux
+            else { this.aux = auxAnterior + this.aux; }
+
             // Conversao da operacao para ser passada como argumento para a proxima
-            argumento = this.adicionarArgumento(converterOperacao(op), argumento);
+            argumento = this.converterOperacao(op, argumento);
         }
 
         saida = argumento;
@@ -381,9 +596,11 @@ public class GeradorCodigo extends rcBaseVisitor<String> {
 
     @Override
     public String visitParametro(rcParser.ParametroContext ctx) {
-        // TODO: composicao_seta_argumento
         String saida = "";
 
+        if (ctx.composicao_seta_argumento() != null) {
+            saida = visitComposicao_seta_argumento(ctx.composicao_seta_argumento());
+        }
         if (ctx.valor() != null) { saida = visitValor(ctx.valor()); }
 
         return saida;
@@ -401,6 +618,24 @@ public class GeradorCodigo extends rcBaseVisitor<String> {
     }
 
     @Override
+    public String visitOp_if(rcParser.Op_ifContext ctx) {
+        StringBuilder saida = new StringBuilder();
+        saida.append(ctx.ID_OP_RELACIONAL().getText());
+
+        // Escrita do nome do operador relacional
+        if (saida.toString().equals("lesser")) { saida = new StringBuilder("<"); }
+        else if (saida.toString().equals("greater")) { saida = new StringBuilder(">"); }
+        else if (saida.toString().equals("equal")) { saida = new StringBuilder("=="); }
+
+        // Escrita dos argumentos da operacao
+        for (rcParser.ParametroContext contextoParametro : ctx.parametro()) {
+            saida.append(" " + visitParametro(contextoParametro));
+        }
+
+        return saida.toString();
+    }
+
+    @Override
     public String visitOp(rcParser.OpContext ctx) {
         StringBuilder saida = new StringBuilder();
 
@@ -410,15 +645,120 @@ public class GeradorCodigo extends rcBaseVisitor<String> {
 
             // Escrita do nome do operador reservado
             else if (ctx.ID_OP_RESERVADO() != null) { saida.append(ctx.ID_OP_RESERVADO().getText()); }
-            if (saida.equals("mod")) { saida = new StringBuilder("%"); }
+            if (saida.toString().equals("mod")) { saida = new StringBuilder("%"); }
+            else if (saida.toString().equals("sqrt")) { saida = new StringBuilder("Math.sqrt"); }
+            else if (saida.toString().equals("pow")) { saida = new StringBuilder("Math.pow"); }
+            else if (saida.toString().equals("and")) { saida = new StringBuilder("&&"); }
+            else if (saida.toString().equals("or")) { saida = new StringBuilder("||"); }
+            else if (saida.toString().equals("not")) { saida = new StringBuilder("!"); }
 
             // Escrita dos argumentos da operacao
             for (rcParser.ParametroContext contextoParametro : ctx.parametro()) {
                 saida.append(" " + visitParametro(contextoParametro));
             }
         }
+        // Experiments may bite
+        else {
+            saida.append(visitIf_statement(ctx.if_statement()));
+        }
 
         return saida.toString();
+    }
+
+    @Override
+    public String visitIf_statement(rcParser.If_statementContext ctx) {
+        StringBuilder saida = new StringBuilder();
+        String auxAnterior;
+
+        // Tipo de retorno, necessario para escolher a fila
+        String tipoRetorno = this.converterTipoPrimitivo(ctx.TYPE().toString());
+        String nomeFila = this.codigoRobo.getNomeFila(tipoRetorno);
+
+        // Escrita do tipo de retorno na variavel auxiliar de filas
+        this.tiposFila.add(tipoRetorno);
+
+        // Primeiro argumento do if, usado em todas as comparacoes
+        String argumento1;
+        String argumento1Aux;
+        if (ctx.parametro() != null) {
+            // Caso um if esteja aninhado no argumento, ele deve ser armazenado para as condicoes
+            auxAnterior = this.aux;
+            this.aux = "";
+
+            argumento1 = visitParametro(ctx.parametro());
+            argumento1Aux = this.aux;
+
+            this.aux = auxAnterior;
+        }
+
+        // Indica falta de argumento, caso nao houver
+        else {
+            argumento1 = " _ ";
+            argumento1Aux = "_\n\n";
+        }
+
+        // Escrita das condicoes
+        for (int i = 0; i < ctx.retorno().size(); i++) {
+            // Escrita do else a partir do primeiro if
+            if (i != 0) {
+                saida.append("else");
+                // Espaco para o else if
+                if (i != ctx.retorno().size() - 1) { saida.append(" "); }
+            }
+
+            // Escrita das condicoes, precedidas por if
+            // O caso default possui apenas else
+            else if (i != ctx.retorno().size() - 1) {
+                // Caso a condicao possua ifs aninhados, e necessario adiciona-los na fila
+                auxAnterior = this.aux;
+                this.aux = "";
+
+                String op = converterOperacao(visitOp_if(ctx.op_if(i)), argumento1);
+                String argumento2Aux = this.aux;
+                this.aux = auxAnterior;
+
+                if (!argumento1Aux.equals("")) {
+                    this.aux += argumento1Aux;
+                }
+                if (!argumento2Aux.equals("")) {
+                    this.aux += argumento2Aux;
+                }
+
+                // Escrita da condicao
+                saida.append("if (").append(op).append(")");
+            }
+
+            saida.append(" {\n");
+
+            // Armazenamento do valor anterior de aux
+            auxAnterior = this.aux;
+            this.aux = "";
+
+            // Escrita do retorno da condicao
+            VisitorsAuxiliares visitorsAuxiliares = new VisitorsAuxiliares();
+            String retorno = visitorsAuxiliares.visitRetorno(ctx.retorno(i)).get(0).getValue();
+            retorno = retorno.replaceFirst("return ", "");
+
+            // Escrita dos if_statements do retorno dentro do retorno da condicao
+            String retornoAux = this.aux;
+            if (!retornoAux.equals("")) {
+                saida.append(this.adicionarIdentacao(retornoAux, 1));
+            }
+            this.aux = auxAnterior;
+
+            // Escreve o valor de retorno na fila
+            saida.append("\t");
+            saida.append(nomeFila).append(".add(");
+            saida.append(retorno).append(");");
+            saida.append("\n}\n");
+        }
+        saida.append("\n");
+
+        // Escrita do if na variavel auxiliar
+        this.aux += saida.toString();
+
+        // Substitui a chamada do if pela leitura da fila
+        return nomeFila + ".remove";
     }
 
     @Override

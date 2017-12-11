@@ -1,0 +1,23 @@
+new robot misterRobot
+    defop _dist x1 as integer, x2 as integer, 
+			y1 as integer, y2 as integer returns floating
+        sqrt (+ (pow (- x2 x1) 2) (y2 -> - y1 -> pow 2)) -> Out
+    
+    defop _pointToLiteral a as integer, b as integer returns literal
+        "(" -> + a -> + ", " -> + b -> + ")" -> Out
+        
+    defcom Init
+		Let xp be integer
+		Let yp be integer
+        41 -> Assign xp
+        42 -> Assign yp
+        _dist (_getX) (_getY) xp yp -> Assign dist
+        "Distancia para o ponto" -> + (_pontoToLiteral xp yp) 
+			-> + " = " -> + dist -> Print
+    
+    defcom Loop
+        Ahead(100)
+        TurnGunRight(180)
+        Ahead(100)
+        TurnGunRight(180)
+end
