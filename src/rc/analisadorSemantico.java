@@ -153,6 +153,7 @@ public class analisadorSemantico extends rcBaseVisitor<String>
         String [] args = new String[ctx.args().arg().size()];
         for (int i = 0; i < args.length; i++) {
             args[i] = visitArg(ctx.args().arg(i));
+            args[i] = visitArg(ctx.args().arg(i));
             try {
                 main.tv.InsereVariavel(ctx.args().arg(i).ID().getText(),args[i]);
             } catch (noTableException e) {
@@ -161,6 +162,7 @@ public class analisadorSemantico extends rcBaseVisitor<String>
                 main.code+="ERRO: A variavel "+e.nome+" ja existe e não pode ser redeclarada";
             }
         }
+        visitRetorno(ctx.retorno());
         try {
             main.to.InsereOperacao(ctx.ID_OPERADOR().getText(),ctx.TYPE().getText(),args);
         } catch (tabelaDeOperacoes.OperationAlreadyExistsException e) {
@@ -172,5 +174,14 @@ public class analisadorSemantico extends rcBaseVisitor<String>
             e.printStackTrace();
         }
         return "";
+    }
+
+    @Override
+    public String visitRetorno(rcParser.RetornoContext ctx) {
+        if(ctx.composicao_seta() != null)
+        {
+            return visitComposicao_seta(ctx.composicao_seta());
+        }
+        return super.visitParametro(ctx.parametro());
     }
 }
