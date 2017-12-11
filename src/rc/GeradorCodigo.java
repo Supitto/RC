@@ -733,8 +733,10 @@ public class GeradorCodigo extends rcBaseVisitor<String> {
 
             // Se operacao nao foi declarada, supoe-se que seja funcao do RoboCode
             // Nesse caso, omite-se o "_"
-            else if (!this.opDeclaradas.contains(saida.toString())) {
-                saida = new StringBuilder(saida.toString().substring(1));
+            else if (saida.charAt(0) == '_') {
+                if (!this.opDeclaradas.contains(saida.toString())) {
+                    saida = new StringBuilder(saida.toString().substring(1));
+                }
             }
 
             // Escrita dos argumentos da operacao
