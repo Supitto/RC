@@ -1,5 +1,7 @@
 package rc;
 
+import org.antlr.v4.codegen.SourceGenTriggers;
+
 import java.util.HashMap;
 
 public class tabelaDeOperacoes
@@ -48,16 +50,24 @@ public class tabelaDeOperacoes
         }
     }
     class OperationNotFoundException extends Exception {
+        public String nome;
         public OperationNotFoundException(String nome)
         {
             super("The operation "+nome+" could not be found");
+            nome = nome;
         }
     }
     class MismatchingArgCountException extends Throwable {
     }
     class MismatchingArgException extends Throwable {
+        String nome;
+        String arg;
+        int pos;
         public MismatchingArgException(String s, String arg, int i) {
             super("There is a mismatching in the arg number "+i+", where is a "+arg+" it should be "+s );
+            nome = s;
+            arg = arg;
+            pos = i;
         }
     }
 }
