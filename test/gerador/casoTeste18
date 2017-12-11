@@ -1,0 +1,11 @@
+new robot misterRobot
+    defcom Loop
+        Ahead 100
+        TurnGunRight 360
+        Back 100
+        TurnGunRight 360
+    
+    defev @onScannedRobot
+        Fire 1
+    
+end
