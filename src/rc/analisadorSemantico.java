@@ -185,10 +185,5 @@ public class analisadorSemantico extends rcBaseVisitor<String>
         return super.visitParametro(ctx.parametro());
     }
 
-    @Override
-    public String visitRetorno(rcParser.RetornoContext ctx) {
-        if(ctx.composicao_seta() != null)
-            return visitComposicao_seta(ctx.composicao_seta());
-        return visitParametro(ctx.parametro());
-    }
+E
 }

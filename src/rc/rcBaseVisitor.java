@@ -145,13 +145,6 @@ public class rcBaseVisitor<T> extends AbstractParseTreeVisitor<T> implements rcV
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitOp_if(rcParser.Op_ifContext ctx) { return visitChildren(ctx); }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation returns the result of calling
-	 * {@link #visitChildren} on {@code ctx}.</p>
-	 */
 	@Override public T visitValor(rcParser.ValorContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
