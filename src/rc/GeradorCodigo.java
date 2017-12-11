@@ -318,7 +318,9 @@ public class GeradorCodigo extends rcBaseVisitor<String> {
         this.codigo += "\n";
 
         // Declaracao da classe do robo
-        adicionarLinha("public class " + codigoRobo.getNome() + " extends Robot {", 0);
+        String nome = Character.toUpperCase(codigoRobo.getNome().charAt(0))
+                                            + codigoRobo.getNome().substring(1);
+        adicionarLinha("public class " + nome + " extends Robot {", 0);
         this.codigo += "\n";
 
         // Declaracao dos metodos adicionais
