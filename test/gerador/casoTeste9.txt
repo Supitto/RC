@@ -4,8 +4,9 @@ new robot misterRobot9
         x2 -> - x1 -> pow 2 -> + (y2 -> - y1 -> pow 2) -> sqrt -> Out
     
     defcom Init
-		Let xp be integer
-		Let yp be integer
+		Let xp be floating
+		Let yp be floating
+		Let dist be floating
         41 -> Assign xp
         42 -> Assign yp
         _dist (_getX) (_getY) xp yp -> Assign dist

@@ -4,8 +4,9 @@ new robot misterRobot8
         Out (sqrt (+ (pow (- x2 x1) 2) (pow (- y2 y1) 2)))
     
     defcom Init
-		Let xp be integer
-		Let yp be integer
+		Let xp be floating
+		Let yp be floating
+		Let dist be floating
         41 -> Assign xp
         42 -> Assign yp
         _dist (_getX) (_getY) xp yp -> Assign dist
