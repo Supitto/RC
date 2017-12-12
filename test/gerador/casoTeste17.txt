@@ -21,6 +21,6 @@ new robot misterRobot17
 			Is greater d Out c
 			Default Out d) b
 
-        (_addAbs a b) -> Print
+        _addAbs a b -> Print
 
 end

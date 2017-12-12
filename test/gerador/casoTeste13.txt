@@ -12,6 +12,6 @@ new robot misterRobot13
         Let b be integer
         Assign 41 a
         Assign 42 b
-        (_addAbs a b) -> Print
+        _addAbs a b -> Print
 
 end
